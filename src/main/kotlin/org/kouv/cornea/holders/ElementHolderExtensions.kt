@@ -8,6 +8,8 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.server.network.ServerPlayNetworkHandler
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
@@ -209,3 +211,30 @@ public inline fun ElementHolder.textDisplayElement(
     text: Text,
     block: TextDisplayElement.() -> Unit = {}
 ): TextDisplayElement = addElement(org.kouv.cornea.elements.textDisplayElement(text, block))
+
+public class HolderStartWatchingScope @PublishedApi internal constructor(
+    public val networkHandler: ServerPlayNetworkHandler
+) {
+    public val player: ServerPlayerEntity get() = networkHandler.player
+}
+
+public inline fun ElementHolder.onStartWatching(crossinline block: HolderStartWatchingScope.() -> Unit): Unit =
+    (this as ElementHolderHook).`cornea$addStartWatchingListener` { HolderStartWatchingScope(it).block() }
+
+public class HolderStopWatchingScope @PublishedApi internal constructor(
+    public val networkHandler: ServerPlayNetworkHandler
+) {
+    public val player: ServerPlayerEntity get() = networkHandler.player
+}
+
+public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatchingScope.() -> Unit): Unit =
+    (this as ElementHolderHook).`cornea$addStopWatchingListener` { HolderStopWatchingScope(it).block() }
+
+public class HolderTickScope @PublishedApi internal constructor(
+    public val ticks: Int
+)
+
+public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit) {
+    var ticks = 0
+    (this as ElementHolderHook).`cornea$addTickListener` { HolderTickScope(ticks++).block() }
+}
