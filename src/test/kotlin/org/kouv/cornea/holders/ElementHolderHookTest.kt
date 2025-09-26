@@ -6,10 +6,10 @@ import io.mockk.*
 import net.minecraft.server.network.ServerPlayNetworkHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
-import org.kouv.cornea.tests.FabricTestExtension
+import org.kouv.cornea.tests.FabricExtension
 import kotlin.test.Test
 
-@ExtendWith(FabricTestExtension::class)
+@ExtendWith(FabricExtension::class)
 class ElementHolderHookTest {
     private lateinit var elementHolder: ElementHolder
     private lateinit var elementHolderHook: ElementHolderHook
