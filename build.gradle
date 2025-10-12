@@ -90,12 +90,6 @@ jreleaser {
         armored = true
     }
 
-    release {
-        github {
-            enabled = false
-        }
-    }
-
     deploy {
         maven {
             mavenCentral {
