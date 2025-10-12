@@ -1,0 +1,110 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'fabric-loom'
+    id 'maven-publish'
+    id 'org.jreleaser'
+}
+
+repositories {
+    maven { url 'https://maven.nucleoid.xyz/' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:$minecraft_version"
+    mappings "net.fabricmc:yarn:$yarn_version:v2"
+    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    modImplementation "eu.pb4:polymer-virtual-entity:$polymer_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test"
+    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "net.fabricmc:fabric-loader-junit:$fabric_loader_version"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+processResources {
+    filesMatching('fabric.mod.json') {
+        expand project.properties
+    }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+kotlin {
+    explicitApi()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+
+            pom {
+                name = 'cornea'
+                description = 'Kotlin DSL for polymer-virtual-entity'
+                url = 'https://github.com/Kouvali/cornea'
+
+                licenses {
+                    license {
+                        name = 'Apache-2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'Kouvali'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:https://github.com/Kouvali/cornea.git'
+                    developerConnection = 'scm:git:ssh://github.com/Kouvali/cornea.git'
+                    url = 'http://github.com/Kouvali/cornea'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = layout.buildDirectory.dir('staging-deploy')
+        }
+    }
+}
+
+jreleaser {
+    signing {
+        active = 'ALWAYS'
+        armored = true
+    }
+
+    release {
+        github {
+            enabled = false
+        }
+    }
+
+    deploy {
+        maven {
+            mavenCentral {
+                sonatype {
+                    active = 'ALWAYS'
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+                    stagingRepository('build/staging-deploy')
+                }
+            }
+        }
+    }
+}
