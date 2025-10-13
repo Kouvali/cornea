@@ -112,7 +112,9 @@ public fun DisplayElement.startInterpolationIfDirty(duration: Int) {
 
 public class ElementTickScope @PublishedApi internal constructor(
     public val ticks: Int
-)
+) {
+    public val isFirstTick: Boolean get() = ticks == 0
+}
 
 public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
     var ticks = 0

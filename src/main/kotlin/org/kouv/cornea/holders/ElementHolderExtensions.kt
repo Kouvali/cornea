@@ -283,7 +283,9 @@ public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatc
 
 public class HolderTickScope @PublishedApi internal constructor(
     public val ticks: Int
-)
+) {
+    public val isFirstTick: Boolean get() = ticks == 0
+}
 
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {
     var ticks = 0
