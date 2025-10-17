@@ -118,30 +118,6 @@ public class ElementTickScope @PublishedApi internal constructor(
     public val ticks: Int
 )
 
-public inline fun ElementTickScope.every(interval: Int, block: () -> Unit) {
-    if (interval > 0 && ticks % interval == 0) {
-        block()
-    }
-}
-
-public inline fun ElementTickScope.at(target: Int, block: () -> Unit) {
-    if (ticks == target) {
-        block()
-    }
-}
-
-public inline fun ElementTickScope.at(vararg targets: Int, block: () -> Unit) {
-    if (ticks in targets) {
-        block()
-    }
-}
-
-public inline fun ElementTickScope.during(range: IntRange, block: () -> Unit) {
-    if (ticks in range) {
-        block()
-    }
-}
-
 public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
     var ticks = 0
     return (this as AbstractElementHook).`cornea$addTickListener` { ElementTickScope(ticks++).block() }

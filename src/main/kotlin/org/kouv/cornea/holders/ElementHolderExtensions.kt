@@ -289,30 +289,6 @@ public class HolderTickScope @PublishedApi internal constructor(
     public val ticks: Int
 )
 
-public inline fun HolderTickScope.every(interval: Int, block: () -> Unit) {
-    if (interval > 0 && ticks % interval == 0) {
-        block()
-    }
-}
-
-public inline fun HolderTickScope.at(target: Int, block: () -> Unit) {
-    if (ticks == target) {
-        block()
-    }
-}
-
-public inline fun HolderTickScope.at(vararg targets: Int, block: () -> Unit) {
-    if (ticks in targets) {
-        block()
-    }
-}
-
-public inline fun HolderTickScope.during(range: IntRange, block: () -> Unit) {
-    if (ticks in range) {
-        block()
-    }
-}
-
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {
     var ticks = 0
     return (this as ElementHolderHook).`cornea$addTickListener` { HolderTickScope(ticks++).block() }
