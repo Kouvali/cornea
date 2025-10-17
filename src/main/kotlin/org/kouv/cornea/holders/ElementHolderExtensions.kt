@@ -292,7 +292,7 @@ public fun HolderTickScope.onFirstTick(block: () -> Unit) {
 }
 
 public fun HolderTickScope.onEveryTick(interval: Int, block: () -> Unit) {
-    if (ticks > 0 && ticks % interval == 0) {
+    if (interval > 0 && ticks % interval == 0) {
         block()
     }
 }

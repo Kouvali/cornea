@@ -121,7 +121,7 @@ public fun ElementTickScope.onFirstTick(block: () -> Unit) {
 }
 
 public fun ElementTickScope.onEveryTick(interval: Int, block: () -> Unit) {
-    if (ticks > 0 && ticks % interval == 0) {
+    if (interval > 0 && ticks % interval == 0) {
         block()
     }
 }
