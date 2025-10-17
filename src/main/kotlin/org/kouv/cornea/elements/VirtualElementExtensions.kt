@@ -114,26 +114,26 @@ public class ElementTickScope @PublishedApi internal constructor(
     public val ticks: Int
 )
 
-public fun ElementTickScope.onFirstTick(block: () -> Unit) {
-    if (ticks == 0) {
-        block()
-    }
-}
-
-public fun ElementTickScope.onEveryTick(interval: Int, block: () -> Unit) {
+public inline fun ElementTickScope.every(interval: Int, block: () -> Unit) {
     if (interval > 0 && ticks % interval == 0) {
         block()
     }
 }
 
-public fun ElementTickScope.onTicksIn(range: IntRange, block: () -> Unit) {
-    if (ticks in range) {
+public inline fun ElementTickScope.at(target: Int, block: () -> Unit) {
+    if (ticks == target) {
         block()
     }
 }
 
-public fun ElementTickScope.onTicksAt(vararg targets: Int, block: () -> Unit) {
+public inline fun ElementTickScope.at(vararg targets: Int, block: () -> Unit) {
     if (ticks in targets) {
+        block()
+    }
+}
+
+public inline fun ElementTickScope.during(range: IntRange, block: () -> Unit) {
+    if (ticks in range) {
         block()
     }
 }

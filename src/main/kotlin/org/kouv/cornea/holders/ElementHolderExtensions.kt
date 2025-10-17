@@ -285,26 +285,26 @@ public class HolderTickScope @PublishedApi internal constructor(
     public val ticks: Int
 )
 
-public fun HolderTickScope.onFirstTick(block: () -> Unit) {
-    if (ticks == 0) {
-        block()
-    }
-}
-
-public fun HolderTickScope.onEveryTick(interval: Int, block: () -> Unit) {
+public inline fun HolderTickScope.every(interval: Int, block: () -> Unit) {
     if (interval > 0 && ticks % interval == 0) {
         block()
     }
 }
 
-public fun HolderTickScope.onTicksIn(range: IntRange, block: () -> Unit) {
-    if (ticks in range) {
+public inline fun HolderTickScope.at(target: Int, block: () -> Unit) {
+    if (ticks == target) {
         block()
     }
 }
 
-public fun HolderTickScope.onTicksAt(vararg targets: Int, block: () -> Unit) {
+public inline fun HolderTickScope.at(vararg targets: Int, block: () -> Unit) {
     if (ticks in targets) {
+        block()
+    }
+}
+
+public inline fun HolderTickScope.during(range: IntRange, block: () -> Unit) {
+    if (ticks in range) {
         block()
     }
 }
