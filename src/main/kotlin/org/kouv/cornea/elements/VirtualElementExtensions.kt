@@ -1,5 +1,6 @@
 package org.kouv.cornea.elements
 
+import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils
 import eu.pb4.polymer.virtualentity.api.elements.*
 import net.minecraft.block.BlockState
 import net.minecraft.entity.Entity
@@ -83,6 +84,9 @@ public inline fun textDisplayElement(block: TextDisplayElement.() -> Unit = {}):
 
 public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() -> Unit = {}): TextDisplayElement =
     TextDisplayElement(text).apply(block)
+
+public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
+    VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
 public inline fun DisplayElement.transformation(block: Matrix4f.() -> Unit = {}): Matrix4f =
     matrix4f(block).also { setTransformation(it) }

@@ -1,6 +1,7 @@
 package org.kouv.cornea.holders
 
 import eu.pb4.polymer.virtualentity.api.ElementHolder
+import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils
 import eu.pb4.polymer.virtualentity.api.attachment.*
 import eu.pb4.polymer.virtualentity.api.elements.*
 import net.minecraft.block.BlockState
@@ -262,6 +263,9 @@ public inline fun ElementHolder.textDisplayElement(
     text: Text,
     block: TextDisplayElement.() -> Unit = {}
 ): TextDisplayElement = addElement(org.kouv.cornea.elements.textDisplayElement(text, block))
+
+public fun ElementHolder.addAsPassengerTo(entity: Entity): Unit =
+    VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
 public class HolderStartWatchingScope @PublishedApi internal constructor(
     public val networkHandler: ServerPlayNetworkHandler
