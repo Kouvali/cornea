@@ -283,8 +283,30 @@ public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatc
 
 public class HolderTickScope @PublishedApi internal constructor(
     public val ticks: Int
-) {
-    public val isFirstTick: Boolean get() = ticks == 0
+)
+
+public fun HolderTickScope.onFirstTick(block: () -> Unit) {
+    if (ticks == 0) {
+        block()
+    }
+}
+
+public fun HolderTickScope.onEveryTick(interval: Int, block: () -> Unit) {
+    if (ticks > 0 && ticks % interval == 0) {
+        block()
+    }
+}
+
+public fun HolderTickScope.onTicksIn(range: IntRange, block: () -> Unit) {
+    if (ticks in range) {
+        block()
+    }
+}
+
+public fun HolderTickScope.onTicksAt(vararg targets: Int, block: () -> Unit) {
+    if (ticks in targets) {
+        block()
+    }
 }
 
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {

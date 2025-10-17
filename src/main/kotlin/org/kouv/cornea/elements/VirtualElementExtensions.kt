@@ -112,8 +112,30 @@ public fun DisplayElement.startInterpolationIfDirty(duration: Int) {
 
 public class ElementTickScope @PublishedApi internal constructor(
     public val ticks: Int
-) {
-    public val isFirstTick: Boolean get() = ticks == 0
+)
+
+public fun ElementTickScope.onFirstTick(block: () -> Unit) {
+    if (ticks == 0) {
+        block()
+    }
+}
+
+public fun ElementTickScope.onEveryTick(interval: Int, block: () -> Unit) {
+    if (ticks > 0 && ticks % interval == 0) {
+        block()
+    }
+}
+
+public fun ElementTickScope.onTicksIn(range: IntRange, block: () -> Unit) {
+    if (ticks in range) {
+        block()
+    }
+}
+
+public fun ElementTickScope.onTicksAt(vararg targets: Int, block: () -> Unit) {
+    if (ticks in targets) {
+        block()
+    }
 }
 
 public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
