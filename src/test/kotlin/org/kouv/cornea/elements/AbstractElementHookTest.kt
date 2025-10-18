@@ -26,9 +26,9 @@ class AbstractElementHookTest {
         val elementHolder = elementHolder()
 
         val mockAttachment = mockk<HolderAttachment>(relaxed = true)
-        val mockListener = mockk<() -> Unit>()
+        val mockListener = mockk<AbstractElementHook.TickListener>()
 
-        every { mockListener() } just runs
+        every { mockListener.onTick(any()) } just runs
 
         elementHolder.addElement(abstractElement)
         elementHolder.attachment = mockAttachment
@@ -38,6 +38,6 @@ class AbstractElementHookTest {
         elementHolder.tick()
 
         // then
-        verify { mockListener() }
+        verify { mockListener.onTick(any()) }
     }
 }

@@ -6,7 +6,14 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public interface AbstractElementHook {
-    List<? extends Runnable> cornea$getTickListeners();
+    List<? extends TickListener> cornea$getTickListeners();
 
-    Disposable cornea$addTickListener(Runnable runnable);
+    Disposable cornea$addTickListener(TickListener tickListener);
+
+    void cornea$removeTickListener(TickListener tickListener);
+
+    @FunctionalInterface
+    interface TickListener {
+        void onTick(Disposable disposable);
+    }
 }

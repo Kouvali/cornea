@@ -115,10 +115,13 @@ public fun DisplayElement.startInterpolationIfDirty(duration: Int) {
 }
 
 public class ElementTickScope @PublishedApi internal constructor(
+    disposable: Disposable,
     public val ticks: Int
-)
+) : Disposable by disposable
 
 public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
     var ticks = 0
-    return (this as AbstractElementHook).`cornea$addTickListener` { ElementTickScope(ticks++).block() }
+    return (this as AbstractElementHook).`cornea$addTickListener` { disposable ->
+        ElementTickScope(disposable, ticks++).block()
+    }
 }

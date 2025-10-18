@@ -268,28 +268,37 @@ public fun ElementHolder.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
 public class HolderStartWatchingScope @PublishedApi internal constructor(
+    disposable: Disposable,
     public val networkHandler: ServerPlayNetworkHandler
-) {
+) : Disposable by disposable {
     public val player: ServerPlayerEntity get() = networkHandler.player
 }
 
 public inline fun ElementHolder.onStartWatching(crossinline block: HolderStartWatchingScope.() -> Unit): Disposable =
-    (this as ElementHolderHook).`cornea$addStartWatchingListener` { HolderStartWatchingScope(it).block() }
+    (this as ElementHolderHook).`cornea$addStartWatchingListener` { disposable, player ->
+        HolderStartWatchingScope(disposable, player).block()
+    }
 
 public class HolderStopWatchingScope @PublishedApi internal constructor(
+    disposable: Disposable,
     public val networkHandler: ServerPlayNetworkHandler
-) {
+) : Disposable by disposable {
     public val player: ServerPlayerEntity get() = networkHandler.player
 }
 
 public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatchingScope.() -> Unit): Disposable =
-    (this as ElementHolderHook).`cornea$addStopWatchingListener` { HolderStopWatchingScope(it).block() }
+    (this as ElementHolderHook).`cornea$addStopWatchingListener` { disposable, player ->
+        HolderStopWatchingScope(disposable, player).block()
+    }
 
 public class HolderTickScope @PublishedApi internal constructor(
+    disposable: Disposable,
     public val ticks: Int
-)
+) : Disposable by disposable
 
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {
     var ticks = 0
-    return (this as ElementHolderHook).`cornea$addTickListener` { HolderTickScope(ticks++).block() }
+    return (this as ElementHolderHook).`cornea$addTickListener` { disposable ->
+        HolderTickScope(disposable, ticks++).block()
+    }
 }

@@ -14,17 +14,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Mixin(value = AbstractElement.class, remap = false)
 public abstract class AbstractElementMixin implements AbstractElementHook {
     @Unique
-    private final List<Runnable> cornea$tickListeners = new CopyOnWriteArrayList<>();
+    private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
 
     @Override
-    public List<? extends Runnable> cornea$getTickListeners() {
+    public List<? extends TickListener> cornea$getTickListeners() {
         return Collections.unmodifiableList(cornea$tickListeners);
     }
 
     @Override
-    public Disposable cornea$addTickListener(Runnable runnable) {
-        Objects.requireNonNull(runnable);
-        cornea$tickListeners.add(runnable);
-        return () -> cornea$tickListeners.remove(runnable);
+    public Disposable cornea$addTickListener(TickListener tickListener) {
+        Objects.requireNonNull(tickListener);
+        cornea$tickListeners.add(tickListener);
+        return () -> cornea$tickListeners.remove(tickListener);
+    }
+
+    @Override
+    public void cornea$removeTickListener(TickListener tickListener) {
+        Objects.requireNonNull(tickListener);
+        cornea$tickListeners.remove(tickListener);
     }
 }

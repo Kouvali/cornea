@@ -24,9 +24,9 @@ class ElementHolderHookTest {
     fun `startWatching should invoke startWatching listeners`() {
         // given
         val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
-        val mockListener = mockk<(ServerPlayNetworkHandler) -> Unit>()
+        val mockListener = mockk<ElementHolderHook.StartWatchingListener>()
 
-        every { mockListener(any()) } just runs
+        every { mockListener.onStartWatching(any(), any()) } just runs
 
         elementHolderHook.`cornea$addStartWatchingListener`(mockListener)
 
@@ -34,16 +34,16 @@ class ElementHolderHookTest {
         elementHolder.startWatching(mockNetworkHandler)
 
         // then
-        verify { mockListener(mockNetworkHandler) }
+        verify { mockListener.onStartWatching(any(), mockNetworkHandler) }
     }
 
     @Test
     fun `stopWatching should invoke stopWatching listeners`() {
         // given
         val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
-        val mockListener = mockk<(ServerPlayNetworkHandler) -> Unit>()
+        val mockListener = mockk<ElementHolderHook.StopWatchingListener>()
 
-        every { mockListener(any()) } just runs
+        every { mockListener.onStopWatching(any(), any()) } just runs
 
         elementHolder.startWatching(mockNetworkHandler)
         elementHolderHook.`cornea$addStopWatchingListener`(mockListener)
@@ -52,16 +52,16 @@ class ElementHolderHookTest {
         elementHolder.stopWatching(mockNetworkHandler)
 
         // then
-        verify { mockListener(mockNetworkHandler) }
+        verify { mockListener.onStopWatching(any(), mockNetworkHandler) }
     }
 
     @Test
     fun `tick should invoke tick listeners when attachment is not null`() {
         // given
         val mockAttachment = mockk<HolderAttachment>(relaxed = true)
-        val mockListener = mockk<() -> Unit>()
+        val mockListener = mockk<ElementHolderHook.TickListener>()
 
-        every { mockListener() } just runs
+        every { mockListener.onTick(any()) } just runs
 
         elementHolder.attachment = mockAttachment
         elementHolderHook.`cornea$addTickListener`(mockListener)
@@ -70,15 +70,15 @@ class ElementHolderHookTest {
         elementHolder.tick()
 
         // then
-        verify { mockListener() }
+        verify { mockListener.onTick(any()) }
     }
 
     @Test
     fun `tick should not invoke tick listeners when attachment is null`() {
         // given
-        val mockListener = mockk<() -> Unit>()
+        val mockListener = mockk<ElementHolderHook.TickListener>()
 
-        every { mockListener() } just runs
+        every { mockListener.onTick(any()) } just runs
 
         elementHolderHook.`cornea$addTickListener`(mockListener)
 
