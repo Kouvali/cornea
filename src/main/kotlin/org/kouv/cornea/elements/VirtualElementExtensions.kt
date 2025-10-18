@@ -122,6 +122,6 @@ public class ElementTickScope @PublishedApi internal constructor(
 public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
     var ticks = 0
     return (this as AbstractElementHook).`cornea$addTickListener` { disposable ->
-        ElementTickScope(disposable, ticks++).block()
+        @Suppress("AssignedValueIsNeverRead") ElementTickScope(disposable, ticks++).block()
     }
 }

@@ -299,6 +299,6 @@ public class HolderTickScope @PublishedApi internal constructor(
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {
     var ticks = 0
     return (this as ElementHolderHook).`cornea$addTickListener` { disposable ->
-        HolderTickScope(disposable, ticks++).block()
+        @Suppress("AssignedValueIsNeverRead") HolderTickScope(disposable, ticks++).block()
     }
 }
