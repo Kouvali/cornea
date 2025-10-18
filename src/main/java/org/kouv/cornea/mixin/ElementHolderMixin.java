@@ -56,31 +56,32 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     @Inject(method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z", at = @At(value = "RETURN"))
     private void cornea$startWatching(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ()) {
-            cornea$startWatchingListeners.forEach(instance ->
-                    instance.onStartWatching(() -> cornea$startWatchingListeners.remove(instance), player)
-            );
+            for (StartWatchingListener startWatchingListener : cornea$startWatchingListeners) {
+                startWatchingListener.onStartWatching(() -> cornea$startWatchingListeners.remove(startWatchingListener), player);
+            }
         }
     }
 
     @Inject(method = "stopWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z", at = @At(value = "RETURN"))
     private void cornea$stopWatching(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ()) {
-            cornea$stopWatchingListeners.forEach(instance ->
-                    instance.onStopWatching(() -> cornea$stopWatchingListeners.remove(instance), player)
-            );
+            for (StopWatchingListener stopWatchingListener : cornea$stopWatchingListeners) {
+                stopWatchingListener.onStopWatching(() -> cornea$stopWatchingListeners.remove(stopWatchingListener), player);
+            }
         }
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V"))
     private void cornea$tick(CallbackInfo ci) {
-        cornea$tickListeners.forEach(instance ->
-                instance.onTick(() -> cornea$tickListeners.remove(instance))
-        );
+        for (TickListener tickListener : cornea$tickListeners) {
+            tickListener.onTick(() -> cornea$tickListeners.remove(tickListener));
+        }
+
         for (VirtualElement element : elements) {
             if (element instanceof AbstractElementHook hook) {
-                hook.cornea$getTickListeners().forEach(instance ->
-                        instance.onTick(() -> hook.cornea$removeTickListener(instance))
-                );
+                for (AbstractElementHook.TickListener tickListener : hook.cornea$getTickListeners()) {
+                    tickListener.onTick(() -> hook.cornea$removeTickListener(tickListener));
+                }
             }
         }
     }
