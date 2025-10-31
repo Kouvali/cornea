@@ -88,6 +88,14 @@ public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() ->
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
+public var GenericEntityElement.velocityRef: Entity?
+    get() {
+        return (this as GenericEntityElementHook).`cornea$getVelocityRef`()
+    }
+    set(value) {
+        (this as GenericEntityElementHook).`cornea$setVelocityRef`(value)
+    }
+
 public inline fun DisplayElement.transformation(block: Matrix4f.() -> Unit = {}): Matrix4f =
     matrix4f(block).also { setTransformation(it) }
 
