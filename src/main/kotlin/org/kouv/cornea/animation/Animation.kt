@@ -2,7 +2,9 @@ package org.kouv.cornea.animation
 
 public class Animation<out T> internal constructor(
     public val frames: List<Frame<T>>
-)
+) {
+    public val totalDuration: Int = frames.sumOf { frame -> frame.duration }
+}
 
 public class Frame<out T>(
     public val value: T,
