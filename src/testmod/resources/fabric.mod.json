@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "cornea-testmod",
+  "version": "${version}",
+  "authors": [
+    "Kouvali"
+  ],
+  "license": "Apache-2.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ]
+  },
+  "depends": {
+    "cornea": "=${version}"
+  }
+}

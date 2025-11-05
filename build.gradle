@@ -5,6 +5,13 @@ plugins {
     id 'org.jreleaser'
 }
 
+sourceSets {
+    testmod {
+        compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
+    }
+}
+
 repositories {
     maven { url 'https://maven.nucleoid.xyz/' }
 }
@@ -24,6 +31,12 @@ test {
 }
 
 processResources {
+    filesMatching('fabric.mod.json') {
+        expand project.properties
+    }
+}
+
+processTestmodResources {
     filesMatching('fabric.mod.json') {
         expand project.properties
     }
