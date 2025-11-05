@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import org.joml.*
+import org.kouv.cornea.animation.Animation
+import org.kouv.cornea.animation.valueIterator
 import org.kouv.cornea.events.Disposable
 import org.kouv.cornea.math.matrix4f
 
@@ -87,6 +89,19 @@ public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() ->
 
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
+
+public inline fun <T> AbstractElement.animate(
+    animation: Animation<T>,
+    crossinline accept: (T) -> Unit
+) {
+    val iterator = animation.valueIterator()
+    onTick {
+        when {
+            iterator.hasNext() -> accept(iterator.next())
+            else -> dispose()
+        }
+    }
+}
 
 public var GenericEntityElement.velocityRef: Entity?
     get() {
