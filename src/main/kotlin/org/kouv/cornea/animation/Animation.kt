@@ -30,6 +30,14 @@ public class AnimationBuilder<T> @PublishedApi internal constructor() {
         add(Frame(value, duration))
     }
 
+    public fun addAll(frames: Collection<Frame<T>>) {
+        this.frames.addAll(frames)
+    }
+
+    public fun addAll(values: Collection<T>, duration: Int = 1) {
+        values.forEach { value -> add(value, duration) }
+    }
+
     @PublishedApi
     internal fun build(): Animation<T> = Animation(frames)
 }
