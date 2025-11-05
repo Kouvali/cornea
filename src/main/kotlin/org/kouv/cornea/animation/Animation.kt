@@ -27,7 +27,7 @@ public class AnimationBuilder<T> @PublishedApi internal constructor() {
     }
 
     public fun add(value: T, duration: Int = 1) {
-        frames.add(Frame(value, duration))
+        add(Frame(value, duration))
     }
 
     @PublishedApi
