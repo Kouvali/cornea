@@ -26,7 +26,7 @@ class ElementHolderHookTest {
         val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
         val mockListener = mockk<ElementHolderHook.StartWatchingListener>()
 
-        every { mockListener.onStartWatching(any(), any()) } just runs
+        every { mockListener.onStartWatching(any()) } just runs
 
         elementHolderHook.`cornea$addStartWatchingListener`(mockListener)
 
@@ -34,7 +34,7 @@ class ElementHolderHookTest {
         elementHolder.startWatching(mockNetworkHandler)
 
         // then
-        verify { mockListener.onStartWatching(any(), mockNetworkHandler) }
+        verify { mockListener.onStartWatching(mockNetworkHandler) }
     }
 
     @Test
@@ -43,7 +43,7 @@ class ElementHolderHookTest {
         val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
         val mockListener = mockk<ElementHolderHook.StopWatchingListener>()
 
-        every { mockListener.onStopWatching(any(), any()) } just runs
+        every { mockListener.onStopWatching(any()) } just runs
 
         elementHolder.startWatching(mockNetworkHandler)
         elementHolderHook.`cornea$addStopWatchingListener`(mockListener)
@@ -52,7 +52,7 @@ class ElementHolderHookTest {
         elementHolder.stopWatching(mockNetworkHandler)
 
         // then
-        verify { mockListener.onStopWatching(any(), mockNetworkHandler) }
+        verify { mockListener.onStopWatching(mockNetworkHandler) }
     }
 
     @Test
@@ -61,7 +61,7 @@ class ElementHolderHookTest {
         val mockAttachment = mockk<HolderAttachment>(relaxed = true)
         val mockListener = mockk<ElementHolderHook.TickListener>()
 
-        every { mockListener.onTick(any()) } just runs
+        every { mockListener.onTick() } just runs
 
         elementHolder.attachment = mockAttachment
         elementHolderHook.`cornea$addTickListener`(mockListener)
@@ -70,7 +70,7 @@ class ElementHolderHookTest {
         elementHolder.tick()
 
         // then
-        verify { mockListener.onTick(any()) }
+        verify { mockListener.onTick() }
     }
 
     @Test
@@ -78,7 +78,7 @@ class ElementHolderHookTest {
         // given
         val mockListener = mockk<ElementHolderHook.TickListener>()
 
-        every { mockListener.onTick(any()) } just runs
+        every { mockListener.onTick() } just runs
 
         elementHolderHook.`cornea$addTickListener`(mockListener)
 

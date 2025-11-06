@@ -1,28 +1,33 @@
 package org.kouv.cornea.holders;
 
 import net.minecraft.server.network.ServerPlayNetworkHandler;
-import org.kouv.cornea.events.Disposable;
 
 @SuppressWarnings("unused")
 public interface ElementHolderHook {
-    Disposable cornea$addStartWatchingListener(StartWatchingListener startWatchingListener);
+    void cornea$addStartWatchingListener(StartWatchingListener startWatchingListener);
 
-    Disposable cornea$addStopWatchingListener(StopWatchingListener stopWatchingListener);
+    void cornea$removeStartWatchingListener(StartWatchingListener startWatchingListener);
 
-    Disposable cornea$addTickListener(TickListener tickListener);
+    void cornea$addStopWatchingListener(StopWatchingListener stopWatchingListener);
+
+    void cornea$removeStopWatchingListener(StopWatchingListener stopWatchingListener);
+
+    void cornea$addTickListener(TickListener tickListener);
+
+    void cornea$removeTickListener(TickListener tickListener);
 
     @FunctionalInterface
     interface StartWatchingListener {
-        void onStartWatching(Disposable disposable, ServerPlayNetworkHandler player);
+        void onStartWatching(ServerPlayNetworkHandler player);
     }
 
     @FunctionalInterface
     interface StopWatchingListener {
-        void onStopWatching(Disposable disposable, ServerPlayNetworkHandler player);
+        void onStopWatching(ServerPlayNetworkHandler player);
     }
 
     @FunctionalInterface
     interface TickListener {
-        void onTick(Disposable disposable);
+        void onTick();
     }
 }

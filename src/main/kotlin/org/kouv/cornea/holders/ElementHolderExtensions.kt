@@ -289,10 +289,21 @@ public class HolderStartWatchingScope @PublishedApi internal constructor(
     public val player: ServerPlayerEntity get() = networkHandler.player
 }
 
-public inline fun ElementHolder.onStartWatching(crossinline block: HolderStartWatchingScope.() -> Unit): Disposable =
-    (this as ElementHolderHook).`cornea$addStartWatchingListener` { disposable, player ->
+public inline fun ElementHolder.onStartWatching(crossinline block: HolderStartWatchingScope.() -> Unit): Disposable {
+    this as ElementHolderHook
+
+    lateinit var startWatchingListener: ElementHolderHook.StartWatchingListener
+    val disposable = Disposable {
+        `cornea$removeStartWatchingListener`(startWatchingListener)
+    }
+
+    startWatchingListener = ElementHolderHook.StartWatchingListener { player ->
         HolderStartWatchingScope(disposable, player).block()
     }
+
+    `cornea$addStartWatchingListener`(startWatchingListener)
+    return disposable
+}
 
 public class HolderStopWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
@@ -301,10 +312,21 @@ public class HolderStopWatchingScope @PublishedApi internal constructor(
     public val player: ServerPlayerEntity get() = networkHandler.player
 }
 
-public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatchingScope.() -> Unit): Disposable =
-    (this as ElementHolderHook).`cornea$addStopWatchingListener` { disposable, player ->
+public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatchingScope.() -> Unit): Disposable {
+    this as ElementHolderHook
+
+    lateinit var stopWatchingListener: ElementHolderHook.StopWatchingListener
+    val disposable = Disposable {
+        `cornea$removeStopWatchingListener`(stopWatchingListener)
+    }
+
+    stopWatchingListener = ElementHolderHook.StopWatchingListener { player ->
         HolderStopWatchingScope(disposable, player).block()
     }
+
+    `cornea$addStopWatchingListener`(stopWatchingListener)
+    return disposable
+}
 
 public class HolderTickScope @PublishedApi internal constructor(
     disposable: Disposable,
@@ -312,8 +334,18 @@ public class HolderTickScope @PublishedApi internal constructor(
 ) : Disposable by disposable
 
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {
+    this as ElementHolderHook
+
+    lateinit var tickListener: ElementHolderHook.TickListener
+    val disposable = Disposable {
+        `cornea$removeTickListener`(tickListener)
+    }
+
     var ticks = 0
-    return (this as ElementHolderHook).`cornea$addTickListener` { disposable ->
+    tickListener = ElementHolderHook.TickListener {
         @Suppress("AssignedValueIsNeverRead") HolderTickScope(disposable, ticks++).block()
     }
+
+    `cornea$addTickListener`(tickListener)
+    return disposable
 }

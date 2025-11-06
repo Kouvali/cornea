@@ -10,9 +10,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import org.joml.*
-import org.kouv.cornea.animation.Animation
-import org.kouv.cornea.animation.valueIterator
-import org.kouv.cornea.events.Disposable
 import org.kouv.cornea.math.matrix4f
 
 public inline fun blockDisplayElement(block: BlockDisplayElement.() -> Unit = {}): BlockDisplayElement =
@@ -90,19 +87,6 @@ public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() ->
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
-public inline fun <T> AbstractElement.animate(
-    animation: Animation<T>,
-    crossinline accept: (T) -> Unit
-) {
-    val iterator = animation.valueIterator()
-    onTick {
-        when {
-            iterator.hasNext() -> accept(iterator.next())
-            else -> dispose()
-        }
-    }
-}
-
 public var GenericEntityElement.velocityRef: Entity?
     get() {
         return (this as GenericEntityElementHook).`cornea$getVelocityRef`()
@@ -134,17 +118,5 @@ public fun DisplayElement.startInterpolation(duration: Int) {
 public fun DisplayElement.startInterpolationIfDirty(duration: Int) {
     if (isTransformationDirty) {
         startInterpolation(duration)
-    }
-}
-
-public class ElementTickScope @PublishedApi internal constructor(
-    disposable: Disposable,
-    public val ticks: Int
-) : Disposable by disposable
-
-public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
-    var ticks = 0
-    return (this as AbstractElementHook).`cornea$addTickListener` { disposable ->
-        @Suppress("AssignedValueIsNeverRead") ElementTickScope(disposable, ticks++).block()
     }
 }
