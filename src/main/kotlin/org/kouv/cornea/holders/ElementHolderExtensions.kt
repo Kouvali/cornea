@@ -17,8 +17,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.WorldChunk
-import org.kouv.cornea.animation.Animation
-import org.kouv.cornea.animation.valueIterator
 import org.kouv.cornea.annotations.ExperimentalPolymerApi
 import org.kouv.cornea.annotations.InternalPolymerApi
 import org.kouv.cornea.events.Disposable
@@ -265,19 +263,6 @@ public inline fun ElementHolder.textDisplayElement(
     text: Text,
     block: TextDisplayElement.() -> Unit = {}
 ): TextDisplayElement = addElement(org.kouv.cornea.elements.textDisplayElement(text, block))
-
-public inline fun <T> ElementHolder.animate(
-    animation: Animation<T>,
-    crossinline accept: (T) -> Unit
-) {
-    val iterator = animation.valueIterator()
-    onTick {
-        when {
-            iterator.hasNext() -> accept(iterator.next())
-            else -> dispose()
-        }
-    }
-}
 
 public fun ElementHolder.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
