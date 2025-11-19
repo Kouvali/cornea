@@ -9,6 +9,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
+import net.minecraft.util.math.Vec3d
 import org.joml.*
 import org.kouv.cornea.math.matrix4f
 
@@ -86,6 +87,14 @@ public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() ->
 
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
+
+public var GenericEntityElement.offsetVelocity: Vec3d
+    get() {
+        return (this as GenericEntityElementHook).`cornea$getOffsetVelocity`()
+    }
+    set(value) {
+        (this as GenericEntityElementHook).`cornea$setOffsetVelocity`(value)
+    }
 
 public var GenericEntityElement.velocityRef: Entity?
     get() {

@@ -19,10 +19,23 @@ import java.util.Objects;
 @Mixin(value = GenericEntityElement.class, remap = false)
 public abstract class GenericEntityElementMixin extends AbstractElement implements GenericEntityElementHook {
     @Unique
+    private Vec3d cornea$offsetVelocity = Vec3d.ZERO;
+    @Unique
     private @Nullable Entity cornea$velocityRef;
 
     @Shadow
     public abstract int getEntityId();
+
+    @Override
+    public Vec3d cornea$getOffsetVelocity() {
+        return cornea$offsetVelocity;
+    }
+
+    @Override
+    public void cornea$setOffsetVelocity(Vec3d offsetVelocity) {
+        Objects.requireNonNull(offsetVelocity);
+        cornea$offsetVelocity = offsetVelocity;
+    }
 
     @Override
     public @Nullable Entity cornea$getVelocityRef() {
@@ -42,8 +55,15 @@ public abstract class GenericEntityElementMixin extends AbstractElement implemen
         }
     }
 
+    @Inject(method = "tick", at = @At(value = "HEAD"))
+    private void cornea$beforeTick(CallbackInfo ci) {
+        if (cornea$offsetVelocity != Vec3d.ZERO) {
+            setOffset(getOffset().add(cornea$offsetVelocity));
+        }
+    }
+
     @Inject(method = "tick", at = @At(value = "TAIL"))
-    private void cornea$tick(CallbackInfo ci) {
+    private void cornea$afterTick(CallbackInfo ci) {
         if (getHolder() != null && cornea$velocityRef != null) {
             getHolder().sendPacket(new EntityVelocityUpdateS2CPacket(getEntityId(), cornea$velocityRef.getVelocity()));
         }
