@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Objects;
+
 @Mixin(value = GenericEntityElement.class, remap = false)
 public abstract class GenericEntityElementMixin extends AbstractElement implements GenericEntityElementHook {
     @Unique
@@ -29,6 +31,7 @@ public abstract class GenericEntityElementMixin extends AbstractElement implemen
 
     @Override
     public void cornea$setVelocityRef(@Nullable Entity velocityRef) {
+        Objects.requireNonNull(velocityRef);
         cornea$velocityRef = velocityRef;
     }
 
