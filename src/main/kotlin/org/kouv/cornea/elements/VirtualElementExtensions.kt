@@ -88,20 +88,20 @@ public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() ->
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
-public var GenericEntityElement.offsetVelocity: Vec3d
+public var AbstractElement.offsetVelocity: Vec3d
     get() {
-        return (this as GenericEntityElementHook).`cornea$getOffsetVelocity`()
+        return (this as AbstractElementHook).`cornea$getOffsetVelocity`()
     }
     set(value) {
-        (this as GenericEntityElementHook).`cornea$setOffsetVelocity`(value)
+        (this as AbstractElementHook).`cornea$setOffsetVelocity`(value)
     }
 
-public var GenericEntityElement.velocityRef: Entity?
+public var AbstractElement.velocityRef: Entity?
     get() {
-        return (this as GenericEntityElementHook).`cornea$getVelocityRef`()
+        return (this as AbstractElementHook).`cornea$getVelocityRef`()
     }
     set(value) {
-        (this as GenericEntityElementHook).`cornea$setVelocityRef`(value)
+        (this as AbstractElementHook).`cornea$setVelocityRef`(value)
     }
 
 public inline fun DisplayElement.transformation(block: Matrix4f.() -> Unit = {}): Matrix4f =

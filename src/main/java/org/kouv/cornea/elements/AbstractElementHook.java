@@ -5,7 +5,7 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unused")
-public interface GenericEntityElementHook {
+public interface AbstractElementHook {
     Vec3d cornea$getOffsetVelocity();
 
     void cornea$setOffsetVelocity(Vec3d offsetVelocity);
