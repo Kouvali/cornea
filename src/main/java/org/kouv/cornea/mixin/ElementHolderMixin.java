@@ -133,7 +133,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V"
+                    target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V",
+                    shift = At.Shift.AFTER
             )
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
