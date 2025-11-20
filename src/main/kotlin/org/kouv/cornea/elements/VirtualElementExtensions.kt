@@ -7,10 +7,15 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.network.listener.ClientPlayPacketListener
+import net.minecraft.network.packet.Packet
+import net.minecraft.server.network.ServerPlayNetworkHandler
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 import org.joml.*
+import org.kouv.cornea.events.Disposable
 import org.kouv.cornea.math.matrix4f
 
 public inline fun blockDisplayElement(block: BlockDisplayElement.() -> Unit = {}): BlockDisplayElement =
@@ -128,4 +133,74 @@ public fun DisplayElement.startInterpolationIfDirty(duration: Int) {
     if (isTransformationDirty) {
         startInterpolation(duration)
     }
+}
+
+public class ElementStartWatchingScope @PublishedApi internal constructor(
+    disposable: Disposable,
+    public val player: ServerPlayerEntity,
+    public val packetConsumer: (Packet<ClientPlayPacketListener>) -> Unit
+) : Disposable by disposable {
+    public val networkHandler: ServerPlayNetworkHandler get() = player.networkHandler
+}
+
+public inline fun AbstractElement.onStartWatching(crossinline block: ElementStartWatchingScope.() -> Unit): Disposable {
+    this as AbstractElementHook
+
+    lateinit var startWatchingListener: AbstractElementHook.StartWatchingListener
+    val disposable = Disposable {
+        `cornea$removeStartWatchingListener`(startWatchingListener)
+    }
+
+    startWatchingListener = AbstractElementHook.StartWatchingListener { player, packetConsumer ->
+        ElementStartWatchingScope(disposable, player, packetConsumer::accept).block()
+    }
+
+    `cornea$addStartWatchingListener`(startWatchingListener)
+    return disposable
+}
+
+public class ElementStopWatchingScope @PublishedApi internal constructor(
+    disposable: Disposable,
+    public val player: ServerPlayerEntity,
+    public val packetConsumer: (Packet<ClientPlayPacketListener>) -> Unit
+) : Disposable by disposable {
+    public val networkHandler: ServerPlayNetworkHandler get() = player.networkHandler
+}
+
+public inline fun AbstractElement.onStopWatching(crossinline block: ElementStopWatchingScope.() -> Unit): Disposable {
+    this as AbstractElementHook
+
+    lateinit var stopWatchingListener: AbstractElementHook.StopWatchingListener
+    val disposable = Disposable {
+        `cornea$removeStopWatchingListener`(stopWatchingListener)
+    }
+
+    stopWatchingListener = AbstractElementHook.StopWatchingListener { player, packetConsumer ->
+        ElementStopWatchingScope(disposable, player, packetConsumer::accept).block()
+    }
+
+    `cornea$addStopWatchingListener`(stopWatchingListener)
+    return disposable
+}
+
+public class ElementTickScope @PublishedApi internal constructor(
+    disposable: Disposable,
+    public val ticks: Int
+) : Disposable by disposable
+
+public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
+    this as AbstractElementHook
+
+    lateinit var tickListener: AbstractElementHook.TickListener
+    val disposable = Disposable {
+        `cornea$removeTickListener`(tickListener)
+    }
+
+    var ticks = 0
+    tickListener = AbstractElementHook.TickListener {
+        @Suppress("AssignedValueIsNeverRead") ElementTickScope(disposable, ticks++).block()
+    }
+
+    `cornea$addTickListener`(tickListener)
+    return disposable
 }

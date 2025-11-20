@@ -19,9 +19,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 @Mixin(value = ElementHolder.class, remap = false)
 public abstract class ElementHolderMixin implements ElementHolderHook {
@@ -84,6 +86,22 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Inject(
+            method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;startWatching(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Consumer;)V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    private void cornea$invokeElementStartWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir, @Local VirtualElement element, @Local ArrayList<Packet<? super ClientPlayPacketListener>> packets) {
+        if (element instanceof AbstractElementHook hook) {
+            for (AbstractElementHook.StartWatchingListener startWatchingListener : hook.cornea$getStartWatchingListeners()) {
+                startWatchingListener.onStartWatching(player.getPlayer(), packets::add);
+            }
+        }
+    }
+
+    @Inject(
             method = "stopWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
             at = @At(value = "RETURN")
     )
@@ -91,6 +109,22 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
         if (cir.getReturnValueZ()) {
             for (StopWatchingListener stopWatchingListener : cornea$stopWatchingListeners) {
                 stopWatchingListener.onStopWatching(player);
+            }
+        }
+    }
+
+    @Inject(
+            method = "stopWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;stopWatching(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Consumer;)V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    private void cornea$invokeElementStopWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir, @Local VirtualElement element, @Local Consumer<Packet<ClientPlayPacketListener>> packetConsumer) {
+        if (element instanceof AbstractElementHook hook) {
+            for (AbstractElementHook.StopWatchingListener stopWatchingListener : hook.cornea$getStopWatchingListeners()) {
+                stopWatchingListener.onStopWatching(player.getPlayer(), packetConsumer);
             }
         }
     }
@@ -105,6 +139,22 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private void cornea$invokeTickListeners(CallbackInfo ci) {
         for (TickListener tickListener : cornea$tickListeners) {
             tickListener.onTick();
+        }
+    }
+
+    @Inject(
+            method = "tick",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    private void cornea$invokeElementTickListeners(CallbackInfo ci, @Local VirtualElement element) {
+        if (element instanceof AbstractElementHook hook) {
+            for (AbstractElementHook.TickListener tickListener : hook.cornea$getTickListeners()) {
+                tickListener.onTick();
+            }
         }
     }
 
