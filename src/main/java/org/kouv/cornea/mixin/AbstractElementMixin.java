@@ -9,6 +9,7 @@ import org.kouv.cornea.elements.AbstractElementHook;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -28,7 +29,7 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
 
     @Override
     public List<? extends StartWatchingListener> cornea$getStartWatchingListeners() {
-        return cornea$startWatchingListeners;
+        return Collections.unmodifiableList(cornea$startWatchingListeners);
     }
 
     @Override
@@ -45,7 +46,7 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
 
     @Override
     public List<? extends StopWatchingListener> cornea$getStopWatchingListeners() {
-        return cornea$stopWatchingListeners;
+        return Collections.unmodifiableList(cornea$stopWatchingListeners);
     }
 
     @Override
@@ -62,7 +63,7 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
 
     @Override
     public List<? extends TickListener> cornea$getTickListeners() {
-        return cornea$tickListeners;
+        return Collections.unmodifiableList(cornea$tickListeners);
     }
 
     @Override
