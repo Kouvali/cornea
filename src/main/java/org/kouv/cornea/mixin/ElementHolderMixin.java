@@ -71,7 +71,10 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
         cornea$tickListeners.remove(tickListener);
     }
 
-    @Inject(method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z", at = @At(value = "RETURN"))
+    @Inject(
+            method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
+            at = @At(value = "RETURN")
+    )
     private void cornea$invokeStartWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ()) {
             for (StartWatchingListener startWatchingListener : cornea$startWatchingListeners) {
@@ -80,7 +83,10 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
         }
     }
 
-    @Inject(method = "stopWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z", at = @At(value = "RETURN"))
+    @Inject(
+            method = "stopWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
+            at = @At(value = "RETURN")
+    )
     private void cornea$invokeStopWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ()) {
             for (StopWatchingListener stopWatchingListener : cornea$stopWatchingListeners) {
@@ -89,14 +95,26 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
         }
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V"))
+    @Inject(
+            method = "tick",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V"
+            )
+    )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
         for (TickListener tickListener : cornea$tickListeners) {
             tickListener.onTick();
         }
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V"))
+    @Inject(
+            method = "tick",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V"
+            )
+    )
     private void cornea$applyElementOffsetVelocity(CallbackInfo ci, @Local VirtualElement element) {
         if (element instanceof AbstractElementHook hook) {
             Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();
@@ -106,7 +124,13 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
         }
     }
 
-    @Inject(method = "notifyElementsOfPositionUpdate", at = @At(value = "INVOKE", target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;notifyMove(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)V"))
+    @Inject(
+            method = "notifyElementsOfPositionUpdate",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;notifyMove(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)V"
+            )
+    )
     private void cornea$applyElementVelocityRef(Vec3d newPos, Vec3d delta, CallbackInfo ci, @Local VirtualElement element) {
         if (element instanceof AbstractElementHook hook) {
             Entity velocityRef = hook.cornea$getVelocityRef();
