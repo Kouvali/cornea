@@ -315,7 +315,7 @@ public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatc
 
 public class HolderTickScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val ticks: Int
+    public val tickCount: Int
 ) : Disposable by disposable
 
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {
@@ -326,9 +326,9 @@ public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> 
         `cornea$removeTickListener`(tickListener)
     }
 
-    var ticks = 0
+    var tickCount = 0
     tickListener = ElementHolderHook.TickListener {
-        @Suppress("AssignedValueIsNeverRead") HolderTickScope(disposable, ticks++).block()
+        @Suppress("AssignedValueIsNeverRead") HolderTickScope(disposable, tickCount++).block()
     }
 
     `cornea$addTickListener`(tickListener)

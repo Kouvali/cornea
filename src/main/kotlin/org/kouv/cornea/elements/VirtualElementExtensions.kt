@@ -185,7 +185,7 @@ public inline fun AbstractElement.onStopWatching(crossinline block: ElementStopW
 
 public class ElementTickScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val ticks: Int
+    public val tickCount: Int
 ) : Disposable by disposable
 
 public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
@@ -196,9 +196,9 @@ public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() 
         `cornea$removeTickListener`(tickListener)
     }
 
-    var ticks = 0
+    var tickCount = 0
     tickListener = AbstractElementHook.TickListener {
-        @Suppress("AssignedValueIsNeverRead") ElementTickScope(disposable, ticks++).block()
+        @Suppress("AssignedValueIsNeverRead") ElementTickScope(disposable, tickCount++).block()
     }
 
     `cornea$addTickListener`(tickListener)
