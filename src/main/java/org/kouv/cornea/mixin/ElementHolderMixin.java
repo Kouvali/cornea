@@ -176,13 +176,32 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Inject(
+            method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;startWatching(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Consumer;)V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    private void cornea$applyElementVelocityRefOnStartWatching(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir, @Local VirtualElement element) {
+        if (element instanceof AbstractElementHook hook) {
+            Entity velocityRef = hook.cornea$getVelocityRef();
+            if (velocityRef != null) {
+                for (int entityId : element.getEntityIds()) {
+                    sendPacket(new EntityVelocityUpdateS2CPacket(entityId, velocityRef.getVelocity()));
+                }
+            }
+        }
+    }
+
+    @Inject(
             method = "notifyElementsOfPositionUpdate",
             at = @At(
                     value = "INVOKE",
                     target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;notifyMove(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)V"
             )
     )
-    private void cornea$applyElementVelocityRef(Vec3d newPos, Vec3d delta, CallbackInfo ci, @Local VirtualElement element) {
+    private void cornea$applyElementVelocityRefOnNotifyMove(Vec3d newPos, Vec3d delta, CallbackInfo ci, @Local VirtualElement element) {
         if (element instanceof AbstractElementHook hook) {
             Entity velocityRef = hook.cornea$getVelocityRef();
             if (velocityRef != null) {
