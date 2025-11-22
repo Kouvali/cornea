@@ -21,6 +21,8 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
     @Unique
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
     @Unique
+    private Vec3d cornea$offsetGravity = Vec3d.ZERO;
+    @Unique
     private Vec3d cornea$offsetVelocity = Vec3d.ZERO;
 
     @Override
@@ -72,6 +74,17 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
     public void cornea$removeTickListener(TickListener tickListener) {
         Objects.requireNonNull(tickListener);
         cornea$tickListeners.remove(tickListener);
+    }
+
+    @Override
+    public Vec3d cornea$getOffsetGravity() {
+        return cornea$offsetGravity;
+    }
+
+    @Override
+    public void cornea$setOffsetGravity(Vec3d offsetGravity) {
+        Objects.requireNonNull(offsetGravity);
+        cornea$offsetGravity = offsetGravity;
     }
 
     @Override

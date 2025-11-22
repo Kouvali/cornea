@@ -160,8 +160,13 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
                     target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V"
             )
     )
-    private void cornea$applyElementOffsetVelocity(CallbackInfo ci, @Local VirtualElement element) {
+    private void cornea$applyElementOffsetPhysics(CallbackInfo ci, @Local VirtualElement element) {
         if (element instanceof AbstractElementHook hook) {
+            Vec3d offsetGravity = hook.cornea$getOffsetGravity();
+            if (offsetGravity != Vec3d.ZERO) {
+                element.setOffset(element.getOffset().add(offsetGravity));
+            }
+
             Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();
             if (offsetVelocity != Vec3d.ZERO) {
                 element.setOffset(element.getOffset().add(offsetVelocity));
