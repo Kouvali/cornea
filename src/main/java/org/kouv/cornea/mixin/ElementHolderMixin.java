@@ -162,9 +162,9 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     )
     private void cornea$applyElementOffsetPhysics(CallbackInfo ci, @Local VirtualElement element) {
         if (element instanceof AbstractElementHook hook) {
-            Vec3d offsetGravity = hook.cornea$getOffsetGravity();
-            if (offsetGravity != Vec3d.ZERO) {
-                element.setOffset(element.getOffset().add(offsetGravity));
+            double offsetGravity = hook.cornea$getOffsetGravity();
+            if (offsetGravity != 0.0) {
+                element.setOffset(element.getOffset().subtract(0.0, offsetGravity, 0.0));
             }
 
             Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();

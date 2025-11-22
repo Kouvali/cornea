@@ -28,9 +28,9 @@ public interface AbstractElementHook {
 
     void cornea$removeTickListener(TickListener tickListener);
 
-    Vec3d cornea$getOffsetGravity();
+    double cornea$getOffsetGravity();
 
-    void cornea$setOffsetGravity(Vec3d offsetGravity);
+    void cornea$setOffsetGravity(double offsetGravity);
 
     Vec3d cornea$getOffsetVelocity();
 
