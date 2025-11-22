@@ -93,7 +93,7 @@ public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() ->
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
-public var AbstractElement.offsetGravity: Vec3d
+public var AbstractElement.offsetGravity: Double
     get() {
         return (this as AbstractElementHook).`cornea$getOffsetGravity`()
     }
