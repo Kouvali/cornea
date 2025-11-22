@@ -1,11 +1,9 @@
 package org.kouv.cornea.elements;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -33,10 +31,6 @@ public interface AbstractElementHook {
     Vec3d cornea$getOffsetVelocity();
 
     void cornea$setOffsetVelocity(Vec3d offsetVelocity);
-
-    @Nullable Entity cornea$getVelocityRef();
-
-    void cornea$setVelocityRef(@Nullable Entity velocityRef);
 
     @FunctionalInterface
     interface StartWatchingListener {

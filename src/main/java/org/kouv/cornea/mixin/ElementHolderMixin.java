@@ -3,16 +3,13 @@ package org.kouv.cornea.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
-import net.minecraft.entity.Entity;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.Vec3d;
 import org.kouv.cornea.elements.AbstractElementHook;
 import org.kouv.cornea.holders.ElementHolderHook;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,9 +30,6 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private final List<StopWatchingListener> cornea$stopWatchingListeners = new CopyOnWriteArrayList<>();
     @Unique
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
-
-    @Shadow
-    public abstract void sendPacket(Packet<? extends ClientPlayPacketListener> packet);
 
     @Override
     public void cornea$addStartWatchingListener(StartWatchingListener startWatchingListener) {
@@ -171,43 +165,6 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();
             if (offsetVelocity != Vec3d.ZERO) {
                 element.setOffset(element.getOffset().add(offsetVelocity));
-            }
-        }
-    }
-
-    @Inject(
-            method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;startWatching(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Consumer;)V",
-                    shift = At.Shift.AFTER
-            )
-    )
-    private void cornea$applyElementVelocityRefOnStartWatching(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir, @Local VirtualElement element) {
-        if (element instanceof AbstractElementHook hook) {
-            Entity velocityRef = hook.cornea$getVelocityRef();
-            if (velocityRef != null) {
-                for (int entityId : element.getEntityIds()) {
-                    sendPacket(new EntityVelocityUpdateS2CPacket(entityId, velocityRef.getVelocity()));
-                }
-            }
-        }
-    }
-
-    @Inject(
-            method = "notifyElementsOfPositionUpdate",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;notifyMove(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)V"
-            )
-    )
-    private void cornea$applyElementVelocityRefOnNotifyMove(Vec3d newPos, Vec3d delta, CallbackInfo ci, @Local VirtualElement element) {
-        if (element instanceof AbstractElementHook hook) {
-            Entity velocityRef = hook.cornea$getVelocityRef();
-            if (velocityRef != null) {
-                for (int entityId : element.getEntityIds()) {
-                    sendPacket(new EntityVelocityUpdateS2CPacket(entityId, velocityRef.getVelocity()));
-                }
             }
         }
     }
