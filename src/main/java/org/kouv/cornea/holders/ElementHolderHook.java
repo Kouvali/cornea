@@ -1,6 +1,8 @@
 package org.kouv.cornea.holders;
 
+import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unused")
 public interface ElementHolderHook {
@@ -11,6 +13,10 @@ public interface ElementHolderHook {
     void cornea$addStopWatchingListener(StopWatchingListener stopWatchingListener);
 
     void cornea$removeStopWatchingListener(StopWatchingListener stopWatchingListener);
+
+    void cornea$addAttachmentChangeListener(AttachmentChangeListener attachmentChangeListener);
+
+    void cornea$removeAttachmentChangeListener(AttachmentChangeListener attachmentChangeListener);
 
     void cornea$addTickListener(TickListener tickListener);
 
@@ -24,6 +30,11 @@ public interface ElementHolderHook {
     @FunctionalInterface
     interface StopWatchingListener {
         void onStopWatching(ServerPlayNetworkHandler player);
+    }
+
+    @FunctionalInterface
+    interface AttachmentChangeListener {
+        void onAttachmentChange(@Nullable HolderAttachment oldAttachment, @Nullable HolderAttachment newAttachment);
     }
 
     @FunctionalInterface

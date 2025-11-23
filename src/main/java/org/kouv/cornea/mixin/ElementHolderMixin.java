@@ -2,11 +2,13 @@ package org.kouv.cornea.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
+import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.elements.AbstractElementHook;
 import org.kouv.cornea.holders.ElementHolderHook;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,6 +30,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private final List<StartWatchingListener> cornea$startWatchingListeners = new CopyOnWriteArrayList<>();
     @Unique
     private final List<StopWatchingListener> cornea$stopWatchingListeners = new CopyOnWriteArrayList<>();
+    @Unique
+    private final List<AttachmentChangeListener> cornea$attachmentChangeListeners = new CopyOnWriteArrayList<>();
     @Unique
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
 
@@ -53,6 +57,18 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     public void cornea$removeStopWatchingListener(StopWatchingListener stopWatchingListener) {
         Objects.requireNonNull(stopWatchingListener);
         cornea$stopWatchingListeners.remove(stopWatchingListener);
+    }
+
+    @Override
+    public void cornea$addAttachmentChangeListener(AttachmentChangeListener attachmentChangeListener) {
+        Objects.requireNonNull(attachmentChangeListener);
+        cornea$attachmentChangeListeners.add(attachmentChangeListener);
+    }
+
+    @Override
+    public void cornea$removeAttachmentChangeListener(AttachmentChangeListener attachmentChangeListener) {
+        Objects.requireNonNull(attachmentChangeListener);
+        cornea$attachmentChangeListeners.remove(attachmentChangeListener);
     }
 
     @Override
@@ -120,6 +136,26 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             for (AbstractElementHook.StopWatchingListener stopWatchingListener : hook.cornea$getStopWatchingListeners()) {
                 stopWatchingListener.onStopWatching(player.getPlayer(), packetConsumer);
             }
+        }
+    }
+
+    @Inject(
+            method = "onAttachmentSet",
+            at = @At(value = "TAIL")
+    )
+    private void cornea$invokeAttachmentChangeListenersOnSet(HolderAttachment attachment, @Nullable HolderAttachment oldAttachment, CallbackInfo ci) {
+        for (AttachmentChangeListener attachmentChangeListener : cornea$attachmentChangeListeners) {
+            attachmentChangeListener.onAttachmentChange(oldAttachment, attachment);
+        }
+    }
+
+    @Inject(
+            method = "onAttachmentRemoved",
+            at = @At(value = "TAIL")
+    )
+    private void cornea$invokeAttachmentChangeListenersOnRemove(HolderAttachment oldAttachment, CallbackInfo ci) {
+        for (AttachmentChangeListener attachmentChangeListener : cornea$attachmentChangeListeners) {
+            attachmentChangeListener.onAttachmentChange(oldAttachment, null);
         }
     }
 

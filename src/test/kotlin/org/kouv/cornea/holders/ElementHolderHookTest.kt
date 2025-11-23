@@ -56,6 +56,36 @@ class ElementHolderHookTest {
     }
 
     @Test
+    fun `setAttachment should invoke attachmentChange listeners`() {
+        // given
+        val mockAttachment1 = mockk<HolderAttachment>(relaxed = true)
+        val mockAttachment2 = mockk<HolderAttachment>(relaxed = true)
+        val mockListener = mockk<ElementHolderHook.AttachmentChangeListener>()
+
+        every { mockListener.onAttachmentChange(any(), any()) } just runs
+
+        elementHolderHook.`cornea$addAttachmentChangeListener`(mockListener)
+
+        // when
+        elementHolder.attachment = mockAttachment1
+
+        // then
+        verify { mockListener.onAttachmentChange(null, mockAttachment1) }
+
+        // when
+        elementHolder.attachment = mockAttachment2
+
+        // then
+        verify { mockListener.onAttachmentChange(mockAttachment1, mockAttachment2) }
+
+        // when
+        elementHolder.attachment = null
+
+        // then
+        verify { mockListener.onAttachmentChange(mockAttachment2, null) }
+    }
+
+    @Test
     fun `tick should invoke tick listeners when attachment is not null`() {
         // given
         val mockAttachment = mockk<HolderAttachment>(relaxed = true)

@@ -313,6 +313,28 @@ public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatc
     return disposable
 }
 
+public class HolderAttachmentChangeScope @PublishedApi internal constructor(
+    disposable: Disposable,
+    public val oldAttachment: HolderAttachment?,
+    public val newAttachment: HolderAttachment?
+) : Disposable by disposable
+
+public inline fun ElementHolder.onAttachmentChange(crossinline block: HolderAttachmentChangeScope.() -> Unit): Disposable {
+    this as ElementHolderHook
+
+    lateinit var attachmentChangeListener: ElementHolderHook.AttachmentChangeListener
+    val disposable = Disposable {
+        `cornea$removeAttachmentChangeListener`(attachmentChangeListener)
+    }
+
+    attachmentChangeListener = ElementHolderHook.AttachmentChangeListener { oldAttachment, newAttachment ->
+        HolderAttachmentChangeScope(disposable, oldAttachment, newAttachment).block()
+    }
+
+    `cornea$addAttachmentChangeListener`(attachmentChangeListener)
+    return disposable
+}
+
 public class HolderTickScope @PublishedApi internal constructor(
     disposable: Disposable,
     public val tickCount: Int
