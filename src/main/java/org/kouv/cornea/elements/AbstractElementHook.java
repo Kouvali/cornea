@@ -5,24 +5,23 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public interface AbstractElementHook {
-    List<? extends StartWatchingListener> cornea$getStartWatchingListeners();
+    void cornea$triggerStartWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer);
 
     void cornea$addStartWatchingListener(StartWatchingListener startWatchingListener);
 
     void cornea$removeStartWatchingListener(StartWatchingListener startWatchingListener);
 
-    List<? extends StopWatchingListener> cornea$getStopWatchingListeners();
+    void cornea$triggerStopWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer);
 
     void cornea$addStopWatchingListener(StopWatchingListener stopWatchingListener);
 
     void cornea$removeStopWatchingListener(StopWatchingListener stopWatchingListener);
 
-    List<? extends TickListener> cornea$getTickListeners();
+    void cornea$triggerTickListeners();
 
     void cornea$addTickListener(TickListener tickListener);
 

@@ -109,9 +109,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     )
     private void cornea$invokeElementStartWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir, @Local VirtualElement element, @Local ArrayList<Packet<? super ClientPlayPacketListener>> packets) {
         if (element instanceof AbstractElementHook hook) {
-            for (AbstractElementHook.StartWatchingListener startWatchingListener : hook.cornea$getStartWatchingListeners()) {
-                startWatchingListener.onStartWatching(player.getPlayer(), packets::add);
-            }
+            hook.cornea$triggerStartWatchingListeners(player.getPlayer(), packets::add);
         }
     }
 
@@ -137,9 +135,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     )
     private void cornea$invokeElementStopWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir, @Local VirtualElement element, @Local Consumer<Packet<ClientPlayPacketListener>> packetConsumer) {
         if (element instanceof AbstractElementHook hook) {
-            for (AbstractElementHook.StopWatchingListener stopWatchingListener : hook.cornea$getStopWatchingListeners()) {
-                stopWatchingListener.onStopWatching(player.getPlayer(), packetConsumer);
-            }
+            hook.cornea$triggerStopWatchingListeners(player.getPlayer(), packetConsumer);
         }
     }
 
@@ -184,9 +180,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private void cornea$invokeElementTickListeners(CallbackInfo ci) {
         for (VirtualElement element : getElements()) {
             if (element instanceof AbstractElementHook hook) {
-                for (AbstractElementHook.TickListener tickListener : hook.cornea$getTickListeners()) {
-                    tickListener.onTick();
-                }
+                hook.cornea$triggerTickListeners();
             }
         }
     }
