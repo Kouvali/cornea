@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.elements.AbstractElementHook;
 import org.kouv.cornea.holders.ElementHolderHook;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,6 +35,9 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private final List<AttachmentChangeListener> cornea$attachmentChangeListeners = new CopyOnWriteArrayList<>();
     @Unique
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
+
+    @Shadow
+    public abstract List<VirtualElement> getElements();
 
     @Override
     public void cornea$addStartWatchingListener(StartWatchingListener startWatchingListener) {
@@ -175,16 +179,14 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
 
     @Inject(
             method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V",
-                    shift = At.Shift.AFTER
-            )
+            at = @At(value = "TAIL")
     )
-    private void cornea$invokeElementTickListeners(CallbackInfo ci, @Local VirtualElement element) {
-        if (element instanceof AbstractElementHook hook) {
-            for (AbstractElementHook.TickListener tickListener : hook.cornea$getTickListeners()) {
-                tickListener.onTick();
+    private void cornea$invokeElementTickListeners(CallbackInfo ci) {
+        for (VirtualElement element : getElements()) {
+            if (element instanceof AbstractElementHook hook) {
+                for (AbstractElementHook.TickListener tickListener : hook.cornea$getTickListeners()) {
+                    tickListener.onTick();
+                }
             }
         }
     }
