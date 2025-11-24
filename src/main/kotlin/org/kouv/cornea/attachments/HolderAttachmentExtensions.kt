@@ -11,7 +11,6 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.WorldChunk
 import org.kouv.cornea.annotations.ExperimentalPolymerApi
 import org.kouv.cornea.annotations.InternalPolymerApi
-import org.kouv.cornea.events.Disposable
 
 @InternalPolymerApi
 public inline fun blockBoundAttachment(
@@ -135,47 +134,3 @@ public inline fun manualAttachment(
     noinline posSupplier: () -> Vec3d,
     block: ManualAttachment.() -> Unit = {}
 ): ManualAttachment = ManualAttachment(holder, world, posSupplier).apply(block)
-
-public class PreEntityTickScope @PublishedApi internal constructor(
-    disposable: Disposable,
-    public val tickCount: Int
-): Disposable by disposable
-
-public inline fun EntityAttachment.onPreEntityTick(crossinline block: PreEntityTickScope.() -> Unit): Disposable {
-    this as EntityAttachmentHook
-
-    lateinit var preEntityTickListener: EntityAttachmentHook.PreEntityTickListener
-    val disposable = Disposable {
-        `cornea$removePreEntityTickListener`(preEntityTickListener)
-    }
-
-    var tickCount = 0
-    preEntityTickListener = EntityAttachmentHook.PreEntityTickListener {
-        @Suppress("AssignedValueIsNeverRead") PreEntityTickScope(disposable, tickCount++).block()
-    }
-
-    `cornea$addPreEntityTickListener`(preEntityTickListener)
-    return disposable
-}
-
-public class PostEntityTickScope @PublishedApi internal constructor(
-    disposable: Disposable,
-    public val tickCount: Int
-): Disposable by disposable
-
-public inline fun EntityAttachment.onPostEntityTick(crossinline block: PostEntityTickScope.() -> Unit): Disposable {
-    this as EntityAttachmentHook
-
-    lateinit var postEntityTickListener: EntityAttachmentHook.PostEntityTickListener
-    val disposable = Disposable {
-        `cornea$removePostEntityTickListener`(postEntityTickListener)
-    }
-
-    var tickCount = 0
-    postEntityTickListener = EntityAttachmentHook.PostEntityTickListener {
-        @Suppress("AssignedValueIsNeverRead") PostEntityTickScope(disposable, tickCount++).block()
-    }
-
-    `cornea$addPostEntityTickListener`(postEntityTickListener)
-    return disposable
-}
