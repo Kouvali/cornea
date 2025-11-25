@@ -93,14 +93,14 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (StartWatchingListener listener : cornea$startWatchingListeners) {
-            listener.onStartWatching(networkHandler);
-        }
-
         for (VirtualElement element : cornea$getElementArray()) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerStartWatchingListeners(networkHandler);
             }
+        }
+
+        for (StartWatchingListener listener : cornea$startWatchingListeners) {
+            listener.onStartWatching(networkHandler);
         }
     }
 
@@ -113,14 +113,14 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (StopWatchingListener listener : cornea$stopWatchingListeners) {
-            listener.onStopWatching(networkHandler);
-        }
-
         for (VirtualElement element : cornea$getElementArray()) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerStopWatchingListeners(networkHandler);
             }
+        }
+
+        for (StopWatchingListener listener : cornea$stopWatchingListeners) {
+            listener.onStopWatching(networkHandler);
         }
     }
 
@@ -149,14 +149,14 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             at = @At(value = "TAIL")
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
-        for (TickListener listener : cornea$tickListeners) {
-            listener.onTick();
-        }
-
         for (VirtualElement element : cornea$getElementArray()) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerTickListeners();
             }
+        }
+
+        for (TickListener listener : cornea$tickListeners) {
+            listener.onTick();
         }
     }
 
