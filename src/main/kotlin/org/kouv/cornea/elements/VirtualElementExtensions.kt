@@ -7,8 +7,6 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.network.listener.ClientPlayPacketListener
-import net.minecraft.network.packet.Packet
 import net.minecraft.server.network.ServerPlayNetworkHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
@@ -137,49 +135,47 @@ public fun DisplayElement.startInterpolationIfDirty(duration: Int) {
 
 public class ElementStartWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val player: ServerPlayerEntity,
-    public val packetConsumer: (Packet<ClientPlayPacketListener>) -> Unit
+    public val networkHandler: ServerPlayNetworkHandler
 ) : Disposable by disposable {
-    public val networkHandler: ServerPlayNetworkHandler get() = player.networkHandler
+    public val player: ServerPlayerEntity get() = networkHandler.player
 }
 
 public inline fun AbstractElement.onStartWatching(crossinline block: ElementStartWatchingScope.() -> Unit): Disposable {
     this as AbstractElementHook
 
-    lateinit var startWatchingListener: AbstractElementHook.StartWatchingListener
+    lateinit var listener: AbstractElementHook.StartWatchingListener
     val disposable = Disposable {
-        `cornea$removeStartWatchingListener`(startWatchingListener)
+        `cornea$removeStartWatchingListener`(listener)
     }
 
-    startWatchingListener = AbstractElementHook.StartWatchingListener { player, packetConsumer ->
-        ElementStartWatchingScope(disposable, player, packetConsumer::accept).block()
+    listener = AbstractElementHook.StartWatchingListener { networkHandler ->
+        ElementStartWatchingScope(disposable, networkHandler).block()
     }
 
-    `cornea$addStartWatchingListener`(startWatchingListener)
+    `cornea$addStartWatchingListener`(listener)
     return disposable
 }
 
 public class ElementStopWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val player: ServerPlayerEntity,
-    public val packetConsumer: (Packet<ClientPlayPacketListener>) -> Unit
+    public val networkHandler: ServerPlayNetworkHandler
 ) : Disposable by disposable {
-    public val networkHandler: ServerPlayNetworkHandler get() = player.networkHandler
+    public val player: ServerPlayerEntity get() = networkHandler.player
 }
 
 public inline fun AbstractElement.onStopWatching(crossinline block: ElementStopWatchingScope.() -> Unit): Disposable {
     this as AbstractElementHook
 
-    lateinit var stopWatchingListener: AbstractElementHook.StopWatchingListener
+    lateinit var listener: AbstractElementHook.StopWatchingListener
     val disposable = Disposable {
-        `cornea$removeStopWatchingListener`(stopWatchingListener)
+        `cornea$removeStopWatchingListener`(listener)
     }
 
-    stopWatchingListener = AbstractElementHook.StopWatchingListener { player, packetConsumer ->
-        ElementStopWatchingScope(disposable, player, packetConsumer::accept).block()
+    listener = AbstractElementHook.StopWatchingListener { networkHandler ->
+        ElementStopWatchingScope(disposable, networkHandler).block()
     }
 
-    `cornea$addStopWatchingListener`(stopWatchingListener)
+    `cornea$addStopWatchingListener`(listener)
     return disposable
 }
 
@@ -191,16 +187,16 @@ public class ElementTickScope @PublishedApi internal constructor(
 public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
     this as AbstractElementHook
 
-    lateinit var tickListener: AbstractElementHook.TickListener
+    lateinit var listener: AbstractElementHook.TickListener
     val disposable = Disposable {
-        `cornea$removeTickListener`(tickListener)
+        `cornea$removeTickListener`(listener)
     }
 
     var tickCount = 0
-    tickListener = AbstractElementHook.TickListener {
+    listener = AbstractElementHook.TickListener {
         @Suppress("AssignedValueIsNeverRead") ElementTickScope(disposable, tickCount++).block()
     }
 
-    `cornea$addTickListener`(tickListener)
+    `cornea$addTickListener`(listener)
     return disposable
 }

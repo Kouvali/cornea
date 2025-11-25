@@ -1,16 +1,14 @@
 package org.kouv.cornea.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.elements.AbstractElementHook;
 import org.kouv.cornea.holders.ElementHolderHook;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -19,11 +17,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 @Mixin(value = ElementHolder.class, remap = false)
 public abstract class ElementHolderMixin implements ElementHolderHook {
@@ -37,79 +33,74 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
 
     @Shadow
-    public abstract List<VirtualElement> getElements();
+    @Final
+    private List<VirtualElement> elements;
 
     @Override
-    public void cornea$addStartWatchingListener(StartWatchingListener startWatchingListener) {
-        Objects.requireNonNull(startWatchingListener);
-        cornea$startWatchingListeners.add(startWatchingListener);
+    public void cornea$addStartWatchingListener(StartWatchingListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$startWatchingListeners.add(listener);
     }
 
     @Override
-    public void cornea$removeStartWatchingListener(StartWatchingListener startWatchingListener) {
-        Objects.requireNonNull(startWatchingListener);
-        cornea$startWatchingListeners.remove(startWatchingListener);
+    public void cornea$removeStartWatchingListener(StartWatchingListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$startWatchingListeners.remove(listener);
     }
 
     @Override
-    public void cornea$addStopWatchingListener(StopWatchingListener stopWatchingListener) {
-        Objects.requireNonNull(stopWatchingListener);
-        cornea$stopWatchingListeners.add(stopWatchingListener);
+    public void cornea$addStopWatchingListener(StopWatchingListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$stopWatchingListeners.add(listener);
     }
 
     @Override
-    public void cornea$removeStopWatchingListener(StopWatchingListener stopWatchingListener) {
-        Objects.requireNonNull(stopWatchingListener);
-        cornea$stopWatchingListeners.remove(stopWatchingListener);
+    public void cornea$removeStopWatchingListener(StopWatchingListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$stopWatchingListeners.remove(listener);
     }
 
     @Override
-    public void cornea$addAttachmentChangeListener(AttachmentChangeListener attachmentChangeListener) {
-        Objects.requireNonNull(attachmentChangeListener);
-        cornea$attachmentChangeListeners.add(attachmentChangeListener);
+    public void cornea$addAttachmentChangeListener(AttachmentChangeListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$attachmentChangeListeners.add(listener);
     }
 
     @Override
-    public void cornea$removeAttachmentChangeListener(AttachmentChangeListener attachmentChangeListener) {
-        Objects.requireNonNull(attachmentChangeListener);
-        cornea$attachmentChangeListeners.remove(attachmentChangeListener);
+    public void cornea$removeAttachmentChangeListener(AttachmentChangeListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$attachmentChangeListeners.remove(listener);
     }
 
     @Override
-    public void cornea$addTickListener(TickListener tickListener) {
-        Objects.requireNonNull(tickListener);
-        cornea$tickListeners.add(tickListener);
+    public void cornea$addTickListener(TickListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$tickListeners.add(listener);
     }
 
     @Override
-    public void cornea$removeTickListener(TickListener tickListener) {
-        Objects.requireNonNull(tickListener);
-        cornea$tickListeners.remove(tickListener);
+    public void cornea$removeTickListener(TickListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$tickListeners.remove(listener);
     }
 
     @Inject(
             method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
             at = @At(value = "RETURN")
     )
-    private void cornea$invokeStartWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir) {
-        if (cir.getReturnValueZ()) {
-            for (StartWatchingListener startWatchingListener : cornea$startWatchingListeners) {
-                startWatchingListener.onStartWatching(player);
-            }
+    private void cornea$invokeStartWatchingListeners(ServerPlayNetworkHandler networkHandler, CallbackInfoReturnable<Boolean> cir) {
+        if (!cir.getReturnValueZ()) {
+            return;
         }
-    }
 
-    @Inject(
-            method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;startWatching(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Consumer;)V",
-                    shift = At.Shift.AFTER
-            )
-    )
-    private void cornea$invokeElementStartWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir, @Local VirtualElement element, @Local ArrayList<Packet<? super ClientPlayPacketListener>> packets) {
-        if (element instanceof AbstractElementHook hook) {
-            hook.cornea$triggerStartWatchingListeners(player.getPlayer(), packets::add);
+        for (StartWatchingListener listener : cornea$startWatchingListeners) {
+            listener.onStartWatching(networkHandler);
+        }
+
+        for (VirtualElement element : cornea$getElementArray()) {
+            if (element instanceof AbstractElementHook hook) {
+                hook.cornea$triggerStartWatchingListeners(networkHandler);
+            }
         }
     }
 
@@ -117,25 +108,19 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             method = "stopWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
             at = @At(value = "RETURN")
     )
-    private void cornea$invokeStopWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir) {
-        if (cir.getReturnValueZ()) {
-            for (StopWatchingListener stopWatchingListener : cornea$stopWatchingListeners) {
-                stopWatchingListener.onStopWatching(player);
-            }
+    private void cornea$invokeStopWatchingListeners(ServerPlayNetworkHandler networkHandler, CallbackInfoReturnable<Boolean> cir) {
+        if (!cir.getReturnValueZ()) {
+            return;
         }
-    }
 
-    @Inject(
-            method = "stopWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;stopWatching(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Consumer;)V",
-                    shift = At.Shift.AFTER
-            )
-    )
-    private void cornea$invokeElementStopWatchingListeners(ServerPlayNetworkHandler player, CallbackInfoReturnable<Boolean> cir, @Local VirtualElement element, @Local Consumer<Packet<ClientPlayPacketListener>> packetConsumer) {
-        if (element instanceof AbstractElementHook hook) {
-            hook.cornea$triggerStopWatchingListeners(player.getPlayer(), packetConsumer);
+        for (StopWatchingListener listener : cornea$stopWatchingListeners) {
+            listener.onStopWatching(networkHandler);
+        }
+
+        for (VirtualElement element : cornea$getElementArray()) {
+            if (element instanceof AbstractElementHook hook) {
+                hook.cornea$triggerStopWatchingListeners(networkHandler);
+            }
         }
     }
 
@@ -144,8 +129,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             at = @At(value = "TAIL")
     )
     private void cornea$invokeAttachmentChangeListenersOnSet(HolderAttachment attachment, @Nullable HolderAttachment oldAttachment, CallbackInfo ci) {
-        for (AttachmentChangeListener attachmentChangeListener : cornea$attachmentChangeListeners) {
-            attachmentChangeListener.onAttachmentChange(oldAttachment, attachment);
+        for (AttachmentChangeListener listener : cornea$attachmentChangeListeners) {
+            listener.onAttachmentChange(oldAttachment, attachment);
         }
     }
 
@@ -154,22 +139,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             at = @At(value = "TAIL")
     )
     private void cornea$invokeAttachmentChangeListenersOnRemove(HolderAttachment oldAttachment, CallbackInfo ci) {
-        for (AttachmentChangeListener attachmentChangeListener : cornea$attachmentChangeListeners) {
-            attachmentChangeListener.onAttachmentChange(oldAttachment, null);
-        }
-    }
-
-    @Inject(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V",
-                    shift = At.Shift.AFTER
-            )
-    )
-    private void cornea$invokeTickListeners(CallbackInfo ci) {
-        for (TickListener tickListener : cornea$tickListeners) {
-            tickListener.onTick();
+        for (AttachmentChangeListener listener : cornea$attachmentChangeListeners) {
+            listener.onAttachmentChange(oldAttachment, null);
         }
     }
 
@@ -177,8 +148,12 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             method = "tick",
             at = @At(value = "TAIL")
     )
-    private void cornea$invokeElementTickListeners(CallbackInfo ci) {
-        for (VirtualElement element : getElements()) {
+    private void cornea$invokeTickListeners(CallbackInfo ci) {
+        for (TickListener listener : cornea$tickListeners) {
+            listener.onTick();
+        }
+
+        for (VirtualElement element : cornea$getElementArray()) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerTickListeners();
             }
@@ -189,20 +164,29 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V"
+                    target = "Ljava/util/List;iterator()Ljava/util/Iterator;"
             )
     )
-    private void cornea$applyElementOffsetPhysics(CallbackInfo ci, @Local VirtualElement element) {
-        if (element instanceof AbstractElementHook hook) {
+    private void cornea$applyElementOffsetPhysics(CallbackInfo ci) {
+        for (VirtualElement element : cornea$getElementArray()) {
+            if (!(element instanceof AbstractElementHook hook)) {
+                continue;
+            }
+
             double offsetGravity = hook.cornea$getOffsetGravity();
-            if (Math.abs(offsetGravity) > 1e-6) {
+            if (Math.abs(offsetGravity) > 1E-6) {
                 hook.cornea$setOffsetVelocity(hook.cornea$getOffsetVelocity().subtract(0, offsetGravity, 0));
             }
 
             Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();
-            if (offsetVelocity.lengthSquared() > 1e-6) {
+            if (offsetVelocity.lengthSquared() > 1E-6) {
                 element.setOffset(element.getOffset().add(offsetVelocity));
             }
         }
+    }
+
+    @Unique
+    private VirtualElement[] cornea$getElementArray() {
+        return elements.toArray(new VirtualElement[0]);
     }
 }

@@ -6,30 +6,30 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unused")
 public interface ElementHolderHook {
-    void cornea$addStartWatchingListener(StartWatchingListener startWatchingListener);
+    void cornea$addStartWatchingListener(StartWatchingListener listener);
 
-    void cornea$removeStartWatchingListener(StartWatchingListener startWatchingListener);
+    void cornea$removeStartWatchingListener(StartWatchingListener listener);
 
-    void cornea$addStopWatchingListener(StopWatchingListener stopWatchingListener);
+    void cornea$addStopWatchingListener(StopWatchingListener listener);
 
-    void cornea$removeStopWatchingListener(StopWatchingListener stopWatchingListener);
+    void cornea$removeStopWatchingListener(StopWatchingListener listener);
 
-    void cornea$addAttachmentChangeListener(AttachmentChangeListener attachmentChangeListener);
+    void cornea$addAttachmentChangeListener(AttachmentChangeListener listener);
 
-    void cornea$removeAttachmentChangeListener(AttachmentChangeListener attachmentChangeListener);
+    void cornea$removeAttachmentChangeListener(AttachmentChangeListener listener);
 
-    void cornea$addTickListener(TickListener tickListener);
+    void cornea$addTickListener(TickListener listener);
 
-    void cornea$removeTickListener(TickListener tickListener);
+    void cornea$removeTickListener(TickListener listener);
 
     @FunctionalInterface
     interface StartWatchingListener {
-        void onStartWatching(ServerPlayNetworkHandler player);
+        void onStartWatching(ServerPlayNetworkHandler networkHandler);
     }
 
     @FunctionalInterface
     interface StopWatchingListener {
-        void onStopWatching(ServerPlayNetworkHandler player);
+        void onStopWatching(ServerPlayNetworkHandler networkHandler);
     }
 
     @FunctionalInterface

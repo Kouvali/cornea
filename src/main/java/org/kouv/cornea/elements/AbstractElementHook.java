@@ -1,48 +1,44 @@
 package org.kouv.cornea.elements;
 
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public interface AbstractElementHook {
-    void cornea$triggerStartWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer);
+    void cornea$triggerStartWatchingListeners(ServerPlayNetworkHandler networkHandler);
 
-    void cornea$addStartWatchingListener(StartWatchingListener startWatchingListener);
+    void cornea$addStartWatchingListener(StartWatchingListener listener);
 
-    void cornea$removeStartWatchingListener(StartWatchingListener startWatchingListener);
+    void cornea$removeStartWatchingListener(StartWatchingListener listener);
 
-    void cornea$triggerStopWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer);
+    void cornea$triggerStopWatchingListeners(ServerPlayNetworkHandler networkHandler);
 
-    void cornea$addStopWatchingListener(StopWatchingListener stopWatchingListener);
+    void cornea$addStopWatchingListener(StopWatchingListener listener);
 
-    void cornea$removeStopWatchingListener(StopWatchingListener stopWatchingListener);
+    void cornea$removeStopWatchingListener(StopWatchingListener listener);
 
     void cornea$triggerTickListeners();
 
-    void cornea$addTickListener(TickListener tickListener);
+    void cornea$addTickListener(TickListener listener);
 
-    void cornea$removeTickListener(TickListener tickListener);
+    void cornea$removeTickListener(TickListener listener);
 
     double cornea$getOffsetGravity();
 
-    void cornea$setOffsetGravity(double offsetGravity);
+    void cornea$setOffsetGravity(double gravity);
 
     Vec3d cornea$getOffsetVelocity();
 
-    void cornea$setOffsetVelocity(Vec3d offsetVelocity);
+    void cornea$setOffsetVelocity(Vec3d velocity);
 
     @FunctionalInterface
     interface StartWatchingListener {
-        void onStartWatching(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer);
+        void onStartWatching(ServerPlayNetworkHandler networkHandler);
     }
 
     @FunctionalInterface
     interface StopWatchingListener {
-        void onStopWatching(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer);
+        void onStopWatching(ServerPlayNetworkHandler networkHandler);
     }
 
     @FunctionalInterface

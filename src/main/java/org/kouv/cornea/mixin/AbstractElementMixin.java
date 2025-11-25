@@ -2,9 +2,7 @@ package org.kouv.cornea.mixin;
 
 import eu.pb4.polymer.virtualentity.api.elements.AbstractElement;
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.Vec3d;
 import org.kouv.cornea.elements.AbstractElementHook;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +11,6 @@ import org.spongepowered.asm.mixin.Unique;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 @Mixin(value = AbstractElement.class, remap = false)
 public abstract class AbstractElementMixin implements AbstractElementHook, VirtualElement {
@@ -29,41 +26,39 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
     private Vec3d cornea$offsetVelocity = Vec3d.ZERO;
 
     @Override
-    public void cornea$triggerStartWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer) {
-        Objects.requireNonNull(player);
-        Objects.requireNonNull(packetConsumer);
-        cornea$startWatchingListeners.forEach(startWatchingListener -> startWatchingListener.onStartWatching(player, packetConsumer));
+    public void cornea$triggerStartWatchingListeners(ServerPlayNetworkHandler networkHandler) {
+        Objects.requireNonNull(networkHandler);
+        cornea$startWatchingListeners.forEach(listener -> listener.onStartWatching(networkHandler));
     }
 
     @Override
-    public void cornea$addStartWatchingListener(StartWatchingListener startWatchingListener) {
-        Objects.requireNonNull(startWatchingListener);
-        cornea$startWatchingListeners.add(startWatchingListener);
+    public void cornea$addStartWatchingListener(StartWatchingListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$startWatchingListeners.add(listener);
     }
 
     @Override
-    public void cornea$removeStartWatchingListener(StartWatchingListener startWatchingListener) {
-        Objects.requireNonNull(startWatchingListener);
-        cornea$startWatchingListeners.remove(startWatchingListener);
+    public void cornea$removeStartWatchingListener(StartWatchingListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$startWatchingListeners.remove(listener);
     }
 
     @Override
-    public void cornea$triggerStopWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer) {
-        Objects.requireNonNull(player);
-        Objects.requireNonNull(packetConsumer);
-        cornea$stopWatchingListeners.forEach(stopWatchingListener -> stopWatchingListener.onStopWatching(player, packetConsumer));
+    public void cornea$triggerStopWatchingListeners(ServerPlayNetworkHandler networkHandler) {
+        Objects.requireNonNull(networkHandler);
+        cornea$stopWatchingListeners.forEach(listener -> listener.onStopWatching(networkHandler));
     }
 
     @Override
-    public void cornea$addStopWatchingListener(StopWatchingListener stopWatchingListener) {
-        Objects.requireNonNull(stopWatchingListener);
-        cornea$stopWatchingListeners.add(stopWatchingListener);
+    public void cornea$addStopWatchingListener(StopWatchingListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$stopWatchingListeners.add(listener);
     }
 
     @Override
-    public void cornea$removeStopWatchingListener(StopWatchingListener stopWatchingListener) {
-        Objects.requireNonNull(stopWatchingListener);
-        cornea$stopWatchingListeners.remove(stopWatchingListener);
+    public void cornea$removeStopWatchingListener(StopWatchingListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$stopWatchingListeners.remove(listener);
     }
 
     @Override
@@ -72,9 +67,9 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
     }
 
     @Override
-    public void cornea$addTickListener(TickListener tickListener) {
-        Objects.requireNonNull(tickListener);
-        cornea$tickListeners.add(tickListener);
+    public void cornea$addTickListener(TickListener listener) {
+        Objects.requireNonNull(listener);
+        cornea$tickListeners.add(listener);
     }
 
     @Override
@@ -89,8 +84,8 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
     }
 
     @Override
-    public void cornea$setOffsetGravity(double offsetGravity) {
-        cornea$offsetGravity = offsetGravity;
+    public void cornea$setOffsetGravity(double gravity) {
+        cornea$offsetGravity = gravity;
     }
 
     @Override
@@ -99,8 +94,8 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
     }
 
     @Override
-    public void cornea$setOffsetVelocity(Vec3d offsetVelocity) {
-        Objects.requireNonNull(offsetVelocity);
-        cornea$offsetVelocity = offsetVelocity;
+    public void cornea$setOffsetVelocity(Vec3d velocity) {
+        Objects.requireNonNull(velocity);
+        cornea$offsetVelocity = velocity;
     }
 }

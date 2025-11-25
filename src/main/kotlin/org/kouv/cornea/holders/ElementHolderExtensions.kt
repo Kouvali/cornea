@@ -277,16 +277,16 @@ public class HolderStartWatchingScope @PublishedApi internal constructor(
 public inline fun ElementHolder.onStartWatching(crossinline block: HolderStartWatchingScope.() -> Unit): Disposable {
     this as ElementHolderHook
 
-    lateinit var startWatchingListener: ElementHolderHook.StartWatchingListener
+    lateinit var listener: ElementHolderHook.StartWatchingListener
     val disposable = Disposable {
-        `cornea$removeStartWatchingListener`(startWatchingListener)
+        `cornea$removeStartWatchingListener`(listener)
     }
 
-    startWatchingListener = ElementHolderHook.StartWatchingListener { player ->
-        HolderStartWatchingScope(disposable, player).block()
+    listener = ElementHolderHook.StartWatchingListener { networkHandler ->
+        HolderStartWatchingScope(disposable, networkHandler).block()
     }
 
-    `cornea$addStartWatchingListener`(startWatchingListener)
+    `cornea$addStartWatchingListener`(listener)
     return disposable
 }
 
@@ -300,16 +300,16 @@ public class HolderStopWatchingScope @PublishedApi internal constructor(
 public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatchingScope.() -> Unit): Disposable {
     this as ElementHolderHook
 
-    lateinit var stopWatchingListener: ElementHolderHook.StopWatchingListener
+    lateinit var listener: ElementHolderHook.StopWatchingListener
     val disposable = Disposable {
-        `cornea$removeStopWatchingListener`(stopWatchingListener)
+        `cornea$removeStopWatchingListener`(listener)
     }
 
-    stopWatchingListener = ElementHolderHook.StopWatchingListener { player ->
-        HolderStopWatchingScope(disposable, player).block()
+    listener = ElementHolderHook.StopWatchingListener { networkHandler ->
+        HolderStopWatchingScope(disposable, networkHandler).block()
     }
 
-    `cornea$addStopWatchingListener`(stopWatchingListener)
+    `cornea$addStopWatchingListener`(listener)
     return disposable
 }
 
@@ -322,16 +322,16 @@ public class HolderAttachmentChangeScope @PublishedApi internal constructor(
 public inline fun ElementHolder.onAttachmentChange(crossinline block: HolderAttachmentChangeScope.() -> Unit): Disposable {
     this as ElementHolderHook
 
-    lateinit var attachmentChangeListener: ElementHolderHook.AttachmentChangeListener
+    lateinit var listener: ElementHolderHook.AttachmentChangeListener
     val disposable = Disposable {
-        `cornea$removeAttachmentChangeListener`(attachmentChangeListener)
+        `cornea$removeAttachmentChangeListener`(listener)
     }
 
-    attachmentChangeListener = ElementHolderHook.AttachmentChangeListener { oldAttachment, newAttachment ->
+    listener = ElementHolderHook.AttachmentChangeListener { oldAttachment, newAttachment ->
         HolderAttachmentChangeScope(disposable, oldAttachment, newAttachment).block()
     }
 
-    `cornea$addAttachmentChangeListener`(attachmentChangeListener)
+    `cornea$addAttachmentChangeListener`(listener)
     return disposable
 }
 
@@ -343,16 +343,16 @@ public class HolderTickScope @PublishedApi internal constructor(
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {
     this as ElementHolderHook
 
-    lateinit var tickListener: ElementHolderHook.TickListener
+    lateinit var listener: ElementHolderHook.TickListener
     val disposable = Disposable {
-        `cornea$removeTickListener`(tickListener)
+        `cornea$removeTickListener`(listener)
     }
 
     var tickCount = 0
-    tickListener = ElementHolderHook.TickListener {
+    listener = ElementHolderHook.TickListener {
         @Suppress("AssignedValueIsNeverRead") HolderTickScope(disposable, tickCount++).block()
     }
 
-    `cornea$addTickListener`(tickListener)
+    `cornea$addTickListener`(listener)
     return disposable
 }
