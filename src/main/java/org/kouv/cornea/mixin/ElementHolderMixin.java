@@ -1,5 +1,6 @@
 package org.kouv.cornea.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
@@ -164,24 +165,29 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Ljava/util/List;iterator()Ljava/util/Iterator;"
+                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V"
             )
     )
-    private void cornea$applyElementOffsetPhysics(CallbackInfo ci) {
-        for (VirtualElement element : cornea$getElementArray()) {
-            if (!(element instanceof AbstractElementHook hook)) {
-                continue;
-            }
+    private void cornea$applyElementOffsetPhysics(CallbackInfo ci, @Local VirtualElement element) {
+        if (element instanceof AbstractElementHook hook) {
+            cornea$applyElementOffsetGravity(hook);
+            cornea$applyElementOffsetVelocity(hook, element);
+        }
+    }
 
-            double offsetGravity = hook.cornea$getOffsetGravity();
-            if (Math.abs(offsetGravity) > 1E-6) {
-                hook.cornea$setOffsetVelocity(hook.cornea$getOffsetVelocity().subtract(0, offsetGravity, 0));
-            }
+    @Unique
+    private void cornea$applyElementOffsetGravity(AbstractElementHook hook) {
+        double offsetGravity = hook.cornea$getOffsetGravity();
+        if (Math.abs(offsetGravity) > 1E-6) {
+            hook.cornea$setOffsetVelocity(hook.cornea$getOffsetVelocity().subtract(0, offsetGravity, 0));
+        }
+    }
 
-            Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();
-            if (offsetVelocity.lengthSquared() > 1E-6) {
-                element.setOffset(element.getOffset().add(offsetVelocity));
-            }
+    @Unique
+    private void cornea$applyElementOffsetVelocity(AbstractElementHook hook, VirtualElement element) {
+        Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();
+        if (offsetVelocity.lengthSquared() > 1E-6) {
+            element.setOffset(element.getOffset().add(offsetVelocity));
         }
     }
 
