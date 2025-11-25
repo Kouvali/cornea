@@ -146,7 +146,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Inject(
-            method = "tick",
+            method = "onTick",
             at = @At(value = "TAIL")
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
