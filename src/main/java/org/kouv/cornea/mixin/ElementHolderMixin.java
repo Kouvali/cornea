@@ -146,18 +146,28 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Inject(
-            method = "onTick",
-            at = @At(value = "TAIL")
+            method = "tick",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V",
+                    shift = At.Shift.AFTER
+            )
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
+        for (TickListener listener : cornea$tickListeners) {
+            listener.onTick();
+        }
+    }
+
+    @Inject(
+            method = "tick",
+            at = @At(value = "TAIL")
+    )
+    private void cornea$invokeElementTickListeners(CallbackInfo ci) {
         for (VirtualElement element : cornea$getElementArray()) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerTickListeners();
             }
-        }
-
-        for (TickListener listener : cornea$tickListeners) {
-            listener.onTick();
         }
     }
 
