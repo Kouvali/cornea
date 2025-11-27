@@ -4,22 +4,31 @@ import org.joml.*
 
 public inline fun matrix4f(block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f().apply(block)
 
-public inline fun matrix4f(from: Matrix3fc, block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f(from).apply(block)
+public inline fun matrix4f(mat: Matrix3fc, block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f(mat).apply(block)
 
-public inline fun matrix4f(from: Matrix4fc, block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f(from).apply(block)
+public inline fun matrix4f(mat: Matrix4fc, block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f(mat).apply(block)
 
-public inline fun matrix4f(from: Matrix4x3fc, block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f(from).apply(block)
+public inline fun matrix4f(mat: Matrix4x3fc, block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f(mat).apply(block)
 
-public inline fun matrix4f(from: Matrix4dc, block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f(from).apply(block)
+public inline fun matrix4f(mat: Matrix4dc, block: Matrix4f.() -> Unit = {}): Matrix4f = Matrix4f(mat).apply(block)
 
-public fun Matrix4f.rotateXDegrees(angle: Float): Matrix4f = rotateX(Math.toRadians(angle))
+public inline fun matrix4f(
+    m00: Float, m01: Float, m02: Float, m03: Float,
+    m10: Float, m11: Float, m12: Float, m13: Float,
+    m20: Float, m21: Float, m22: Float, m23: Float,
+    m30: Float, m31: Float, m32: Float, m33: Float,
+    block: Matrix4f.() -> Unit = {}
+): Matrix4f = Matrix4f(
+    m00, m01, m02, m03,
+    m10, m11, m12, m13,
+    m20, m21, m22, m23,
+    m30, m31, m32, m33
+).apply(block)
 
-public fun Matrix4f.rotateYDegrees(angle: Float): Matrix4f = rotateY(Math.toRadians(angle))
-
-public fun Matrix4f.rotateZDegrees(angle: Float): Matrix4f = rotateZ(Math.toRadians(angle))
-
-public fun Matrix4f.rotateLocalXDegrees(angle: Float): Matrix4f = rotateLocalX(Math.toRadians(angle))
-
-public fun Matrix4f.rotateLocalYDegrees(angle: Float): Matrix4f = rotateLocalY(Math.toRadians(angle))
-
-public fun Matrix4f.rotateLocalZDegrees(angle: Float): Matrix4f = rotateLocalZ(Math.toRadians(angle))
+public inline fun matrix4f(
+    col0: Vector4fc,
+    col1: Vector4fc,
+    col2: Vector4fc,
+    col3: Vector4fc,
+    block: Matrix4f.() -> Unit = {}
+): Matrix4f = Matrix4f(col0, col1, col2, col3).apply(block)
