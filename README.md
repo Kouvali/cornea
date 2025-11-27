@@ -37,11 +37,6 @@ dependencies {
 Here's a quick example:
 
 ```kotlin
-import net.minecraft.block.Blocks
-import org.kouv.cornea.elements.*
-import org.kouv.cornea.holders.*
-import org.kouv.cornea.math.rotateLocalYDegrees
-
 fun create() = elementHolder {
     blockDisplayElement {
         val baseTransformation = transformation {
@@ -51,7 +46,7 @@ fun create() = elementHolder {
 
         onTick {
             transformation(from = baseTransformation) {
-                rotateLocalYDegrees(tickCount * 11.25f)
+                rotateLocalY((tickCount * 11.25f).toRadians())
             }
 
             startInterpolation(1)
