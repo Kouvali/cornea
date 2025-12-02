@@ -45,7 +45,7 @@ fun create() = elementHolder {
         }
 
         onTick {
-            transformation(from = baseTransformation) {
+            transformation(mat = baseTransformation) {
                 rotateLocalY((tickCount * 11.25f).toRadians())
             }
 
