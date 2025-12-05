@@ -356,3 +356,21 @@ public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> 
     `cornea$addTickListener`(listener)
     return disposable
 }
+
+@Deprecated(
+    "Use org.kouv.cornea.elements.onStartWatching instead",
+    level = DeprecationLevel.ERROR
+)
+public fun AbstractElement.onStartWatching(block: Any.() -> Unit): Unit = error("Do not call")
+
+@Deprecated(
+    "Use org.kouv.cornea.elements.onStopWatching instead",
+    level = DeprecationLevel.ERROR
+)
+public fun AbstractElement.onStopWatching(block: Any.() -> Unit): Unit = error("Do not call")
+
+@Deprecated(
+    "Use org.kouv.cornea.elements.onTick instead",
+    level = DeprecationLevel.ERROR
+)
+public fun AbstractElement.onTick(block: Any.() -> Unit): Unit = error("Do not call")
