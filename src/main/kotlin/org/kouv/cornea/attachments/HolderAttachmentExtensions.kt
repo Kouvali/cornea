@@ -136,46 +136,24 @@ public inline fun manualAttachment(
     block: ManualAttachment.() -> Unit = {}
 ): ManualAttachment = ManualAttachment(holder, world, posSupplier).apply(block)
 
-public class EntityAttachmentPreEntityTickScope @PublishedApi internal constructor(
+public class EntityAttachmentEntityTickScope @PublishedApi internal constructor(
     disposable: Disposable,
     public val tickCount: Int
 ) : Disposable by disposable
 
-public inline fun EntityAttachment.onPreEntityTick(crossinline block: EntityAttachmentPreEntityTickScope.() -> Unit): Disposable {
+public inline fun EntityAttachment.onEntityTick(crossinline block: EntityAttachmentEntityTickScope.() -> Unit): Disposable {
     this as EntityAttachmentHook
 
-    lateinit var listener: EntityAttachmentHook.PreEntityTickListener
+    lateinit var listener: EntityAttachmentHook.EntityTickListener
     val disposable = Disposable {
-        `cornea$removePreEntityTickListener`(listener)
+        `cornea$removeEntityTickListener`(listener)
     }
 
     var tickCount = 0
-    listener = EntityAttachmentHook.PreEntityTickListener {
-        @Suppress("AssignedValueIsNeverRead") EntityAttachmentPreEntityTickScope(disposable, tickCount++).block()
+    listener = EntityAttachmentHook.EntityTickListener {
+        @Suppress("AssignedValueIsNeverRead") EntityAttachmentEntityTickScope(disposable, tickCount++).block()
     }
 
-    `cornea$addPreEntityTickListener`(listener)
-    return disposable
-}
-
-public class EntityAttachmentPostEntityTickScope @PublishedApi internal constructor(
-    disposable: Disposable,
-    public val tickCount: Int
-) : Disposable by disposable
-
-public inline fun EntityAttachment.onPostEntityTick(crossinline block: EntityAttachmentPostEntityTickScope.() -> Unit): Disposable {
-    this as EntityAttachmentHook
-
-    lateinit var listener: EntityAttachmentHook.PostEntityTickListener
-    val disposable = Disposable {
-        `cornea$removePostEntityTickListener`(listener)
-    }
-
-    var tickCount = 0
-    listener = EntityAttachmentHook.PostEntityTickListener {
-        @Suppress("AssignedValueIsNeverRead") EntityAttachmentPostEntityTickScope(disposable, tickCount++).block()
-    }
-
-    `cornea$addPostEntityTickListener`(listener)
+    `cornea$addEntityTickListener`(listener)
     return disposable
 }

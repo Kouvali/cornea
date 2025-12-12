@@ -13,20 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ServerWorld.class)
 public abstract class ServerWorldMixin {
-    @Inject(method = "tickEntity", at = @At(value = "HEAD"))
-    private void cornea$invokeAttachmentPreTickListeners(Entity entity, CallbackInfo ci) {
-        for (HolderAttachment attachment : cornea$getAttachments(entity)) {
-            if (attachment instanceof EntityAttachmentHook hook) {
-                hook.cornea$triggerPreEntityTickListeners();
-            }
-        }
-    }
-
     @Inject(method = "tickEntity", at = @At(value = "TAIL"))
-    private void cornea$invokeAttachmentPostTickListeners(Entity entity, CallbackInfo ci) {
+    private void cornea$invokeAttachmentTickListeners(Entity entity, CallbackInfo ci) {
         for (HolderAttachment attachment : cornea$getAttachments(entity)) {
             if (attachment instanceof EntityAttachmentHook hook) {
-                hook.cornea$triggerPostEntityTickListeners();
+                hook.cornea$triggerEntityTickListeners();
             }
         }
     }

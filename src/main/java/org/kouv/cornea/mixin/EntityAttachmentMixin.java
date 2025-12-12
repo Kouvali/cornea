@@ -12,41 +12,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Mixin(value = EntityAttachment.class, remap = false)
 public abstract class EntityAttachmentMixin implements EntityAttachmentHook {
     @Unique
-    private final List<PreEntityTickListener> cornea$preEntityTickListeners = new CopyOnWriteArrayList<>();
-    @Unique
-    private final List<PostEntityTickListener> cornea$postEntityTickListeners = new CopyOnWriteArrayList<>();
+    private final List<EntityTickListener> cornea$entityTickListeners = new CopyOnWriteArrayList<>();
 
     @Override
-    public void cornea$triggerPreEntityTickListeners() {
-        cornea$preEntityTickListeners.forEach(PreEntityTickListener::onPreEntityTick);
+    public void cornea$triggerEntityTickListeners() {
+        cornea$entityTickListeners.forEach(EntityTickListener::onEntityTick);
     }
 
     @Override
-    public void cornea$addPreEntityTickListener(PreEntityTickListener listener) {
+    public void cornea$addEntityTickListener(EntityTickListener listener) {
         Objects.requireNonNull(listener);
-        cornea$preEntityTickListeners.add(listener);
+        cornea$entityTickListeners.add(listener);
     }
 
     @Override
-    public void cornea$removePreEntityTickListener(PreEntityTickListener listener) {
+    public void cornea$removeEntityTickListener(EntityTickListener listener) {
         Objects.requireNonNull(listener);
-        cornea$preEntityTickListeners.remove(listener);
-    }
-
-    @Override
-    public void cornea$triggerPostEntityTickListeners() {
-        cornea$postEntityTickListeners.forEach(PostEntityTickListener::onPostEntityTick);
-    }
-
-    @Override
-    public void cornea$addPostEntityTickListener(PostEntityTickListener listener) {
-        Objects.requireNonNull(listener);
-        cornea$postEntityTickListeners.add(listener);
-    }
-
-    @Override
-    public void cornea$removePostEntityTickListener(PostEntityTickListener listener) {
-        Objects.requireNonNull(listener);
-        cornea$postEntityTickListeners.remove(listener);
+        cornea$entityTickListeners.remove(listener);
     }
 }

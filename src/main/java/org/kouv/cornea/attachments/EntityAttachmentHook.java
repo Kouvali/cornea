@@ -2,25 +2,14 @@ package org.kouv.cornea.attachments;
 
 @SuppressWarnings("unused")
 public interface EntityAttachmentHook {
-    void cornea$triggerPreEntityTickListeners();
+    void cornea$triggerEntityTickListeners();
 
-    void cornea$addPreEntityTickListener(PreEntityTickListener listener);
+    void cornea$addEntityTickListener(EntityTickListener listener);
 
-    void cornea$removePreEntityTickListener(PreEntityTickListener listener);
-
-    void cornea$triggerPostEntityTickListeners();
-
-    void cornea$addPostEntityTickListener(PostEntityTickListener listener);
-
-    void cornea$removePostEntityTickListener(PostEntityTickListener listener);
+    void cornea$removeEntityTickListener(EntityTickListener listener);
 
     @FunctionalInterface
-    interface PreEntityTickListener {
-        void onPreEntityTick();
-    }
-
-    @FunctionalInterface
-    interface PostEntityTickListener {
-        void onPostEntityTick();
+    interface EntityTickListener {
+        void onEntityTick();
     }
 }
