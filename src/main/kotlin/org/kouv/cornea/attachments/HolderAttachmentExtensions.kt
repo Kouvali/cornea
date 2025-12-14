@@ -11,7 +11,6 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.WorldChunk
 import org.kouv.cornea.annotations.ExperimentalPolymerApi
 import org.kouv.cornea.annotations.InternalPolymerApi
-import org.kouv.cornea.events.Disposable
 
 @InternalPolymerApi
 public inline fun blockBoundAttachment(
@@ -135,25 +134,3 @@ public inline fun manualAttachment(
     noinline posSupplier: () -> Vec3d,
     block: ManualAttachment.() -> Unit = {}
 ): ManualAttachment = ManualAttachment(holder, world, posSupplier).apply(block)
-
-public class EntityAttachmentEntityTickScope @PublishedApi internal constructor(
-    disposable: Disposable,
-    public val tickCount: Int
-) : Disposable by disposable
-
-public inline fun EntityAttachment.onEntityTick(crossinline block: EntityAttachmentEntityTickScope.() -> Unit): Disposable {
-    this as EntityAttachmentHook
-
-    lateinit var listener: EntityAttachmentHook.EntityTickListener
-    val disposable = Disposable {
-        `cornea$removeEntityTickListener`(listener)
-    }
-
-    var tickCount = 0
-    listener = EntityAttachmentHook.EntityTickListener {
-        EntityAttachmentEntityTickScope(disposable, tickCount++).block()
-    }
-
-    `cornea$addEntityTickListener`(listener)
-    return disposable
-}
