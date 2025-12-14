@@ -350,7 +350,7 @@ public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> 
 
     var tickCount = 0
     listener = ElementHolderHook.TickListener {
-        @Suppress("AssignedValueIsNeverRead") HolderTickScope(disposable, tickCount++).block()
+        HolderTickScope(disposable, tickCount++).block()
     }
 
     `cornea$addTickListener`(listener)

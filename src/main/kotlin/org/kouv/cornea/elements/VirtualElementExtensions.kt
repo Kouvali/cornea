@@ -341,7 +341,7 @@ public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() 
 
     var tickCount = 0
     listener = AbstractElementHook.TickListener {
-        @Suppress("AssignedValueIsNeverRead") ElementTickScope(disposable, tickCount++).block()
+        ElementTickScope(disposable, tickCount++).block()
     }
 
     `cornea$addTickListener`(listener)

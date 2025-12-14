@@ -151,7 +151,7 @@ public inline fun EntityAttachment.onEntityTick(crossinline block: EntityAttachm
 
     var tickCount = 0
     listener = EntityAttachmentHook.EntityTickListener {
-        @Suppress("AssignedValueIsNeverRead") EntityAttachmentEntityTickScope(disposable, tickCount++).block()
+        EntityAttachmentEntityTickScope(disposable, tickCount++).block()
     }
 
     `cornea$addEntityTickListener`(listener)
