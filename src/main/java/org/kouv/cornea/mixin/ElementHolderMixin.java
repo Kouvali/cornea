@@ -157,7 +157,13 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
         for (TickListener listener : cornea$tickListeners) {
             listener.onTick();
         }
+    }
 
+    @Inject(
+            method = "tick",
+            at = @At(value = "TAIL")
+    )
+    private void cornea$invokeElementTickListeners(CallbackInfo ci) {
         for (VirtualElement element : cornea$getElementArray()) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerTickListeners();
