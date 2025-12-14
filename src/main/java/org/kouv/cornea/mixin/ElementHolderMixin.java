@@ -94,7 +94,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (VirtualElement element : cornea$getElementArray()) {
+        for (VirtualElement element : elements) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerStartWatchingListeners(networkHandler);
             }
@@ -114,7 +114,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (VirtualElement element : cornea$getElementArray()) {
+        for (VirtualElement element : elements) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerStopWatchingListeners(networkHandler);
             }
@@ -164,7 +164,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             at = @At(value = "TAIL")
     )
     private void cornea$invokeElementTickListeners(CallbackInfo ci) {
-        for (VirtualElement element : cornea$getElementArray()) {
+        for (VirtualElement element : elements) {
             if (element instanceof AbstractElementHook hook) {
                 hook.cornea$triggerTickListeners();
             }
@@ -199,10 +199,5 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
         if (offsetVelocity.lengthSquared() > 1E-6) {
             element.setOffset(element.getOffset().add(offsetVelocity));
         }
-    }
-
-    @Unique
-    private VirtualElement[] cornea$getElementArray() {
-        return elements.toArray(new VirtualElement[0]);
     }
 }
