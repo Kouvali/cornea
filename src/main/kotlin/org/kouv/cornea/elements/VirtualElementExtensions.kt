@@ -109,6 +109,11 @@ public var AbstractElement.offsetVelocity: Vec3d
         (this as AbstractElementHook).`cornea$setOffsetVelocity`(value)
     }
 
+public val DisplayElement.transformation: Matrix4fc
+    get() {
+        return (this as DisplayElementHook).`cornea$getTransformation`()
+    }
+
 public inline fun DisplayElement.transformation(block: Matrix4f.() -> Unit = {}): Matrix4f =
     matrix4f(block).also { setTransformation(it) }
 
