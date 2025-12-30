@@ -151,6 +151,9 @@ public inline fun DisplayElement.transformation(
     block: Matrix4f.() -> Unit = {}
 ): Matrix4f = matrix4f(col0, col1, col2, col3, block).also { setTransformation(it) }
 
+public inline fun DisplayElement.transform(block: Matrix4f.() -> Unit): Matrix4f =
+    matrix4f(transformation, block).also { setTransformation(it) }
+
 public inline fun DisplayElement.translation(block: Vector3f.() -> Unit = {}): Vector3f =
     vector3f(block).also { translation = it }
 
