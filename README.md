@@ -39,14 +39,14 @@ Here's a quick example:
 ```kotlin
 fun create() = elementHolder {
     blockDisplayElement {
-        val baseTransformation = transformation {
+        transformation {
             translateLocal(-0.5f, -0.5f, -0.5f)
             scaleLocal(0.75f)
         }
 
         onTick {
-            transformation(mat = baseTransformation) {
-                rotateLocalY((tickCount * 11.25f).toRadians())
+            transform {
+                rotateLocalY(11.25f.toRadians())
             }
 
             startInterpolation(1)
