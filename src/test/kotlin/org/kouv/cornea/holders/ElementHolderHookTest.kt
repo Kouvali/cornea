@@ -2,12 +2,13 @@ package org.kouv.cornea.holders
 
 import eu.pb4.polymer.virtualentity.api.ElementHolder
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment
+import eu.pb4.polymer.virtualentity.api.elements.VirtualElement
 import io.mockk.*
 import net.minecraft.server.network.ServerPlayNetworkHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kouv.cornea.tests.FabricExtension
-import kotlin.test.Test
+import kotlin.test.*
 
 @ExtendWith(FabricExtension::class)
 class ElementHolderHookTest {
@@ -117,5 +118,39 @@ class ElementHolderHookTest {
 
         // then
         verify { mockListener wasNot called }
+    }
+
+    @Test
+    fun `removeElement should destroy holder when autoDestroyIfEmpty is true and elements become empty`() {
+        // given
+        val mockAttachment = mockk<HolderAttachment>(relaxed = true)
+        val mockElement = mockk<VirtualElement>(relaxed = true)
+
+        elementHolder.attachment = mockAttachment
+        elementHolder.addElement(mockElement)
+        elementHolderHook.`cornea$setAutoDestroyIfEmpty`(true)
+
+        // when
+        elementHolder.removeElement(mockElement)
+
+        // then
+        verify { mockAttachment.destroy() }
+    }
+
+    @Test
+    fun `removeElement should not destroy holder when autoDestroyIfEmpty is false`() {
+        // given
+        val mockAttachment = mockk<HolderAttachment>(relaxed = true)
+        val mockElement = mockk<VirtualElement>(relaxed = true)
+
+        elementHolder.attachment = mockAttachment
+        elementHolder.addElement(mockElement)
+        elementHolderHook.`cornea$setAutoDestroyIfEmpty`(false)
+
+        // when
+        elementHolder.removeElement(mockElement)
+
+        // then
+        verify(exactly = 0) { mockAttachment.destroy() }
     }
 }

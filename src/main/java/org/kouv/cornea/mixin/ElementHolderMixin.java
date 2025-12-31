@@ -32,10 +32,15 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private final List<AttachmentChangeListener> cornea$attachmentChangeListeners = new CopyOnWriteArrayList<>();
     @Unique
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
+    @Unique
+    private boolean cornea$autoDestroyIfEmpty = false;
 
     @Shadow
     @Final
     private List<VirtualElement> elements;
+
+    @Shadow
+    public abstract void destroy();
 
     @Override
     public void cornea$addStartWatchingListener(StartWatchingListener listener) {
@@ -83,6 +88,16 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     public void cornea$removeTickListener(TickListener listener) {
         Objects.requireNonNull(listener);
         cornea$tickListeners.remove(listener);
+    }
+
+    @Override
+    public boolean cornea$isAutoDestroyIfEmpty() {
+        return cornea$autoDestroyIfEmpty;
+    }
+
+    @Override
+    public void cornea$setAutoDestroyIfEmpty(boolean autoDestroyIfEmpty) {
+        cornea$autoDestroyIfEmpty = autoDestroyIfEmpty;
     }
 
     @Inject(
@@ -189,6 +204,19 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             if (offsetVelocity.lengthSquared() > 1E-6) {
                 element.setOffset(element.getOffset().add(offsetVelocity));
             }
+        }
+    }
+
+    @Inject(
+            method = "removeElementWithoutUpdates",
+            at = @At(value = "RETURN")
+    )
+    private void cornea$destroyIfEmpty(VirtualElement element, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValueZ() &&
+                cornea$isAutoDestroyIfEmpty() &&
+                elements.isEmpty()
+        ) {
+            destroy();
         }
     }
 }
