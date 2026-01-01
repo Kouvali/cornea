@@ -181,7 +181,8 @@ public inline fun DisplayElement.translation(v: Vector2ic, z: Float, block: Vect
 public inline fun DisplayElement.translation(xyz: FloatArray, block: Vector3f.() -> Unit = {}): Vector3f =
     vector3f(xyz, block).also { translation = it }
 
-public inline fun DisplayElement.scale(block: Vector3f.() -> Unit = {}): Vector3f = vector3f(block).also { scale = it }
+public inline fun DisplayElement.scale(block: Vector3f.() -> Unit = {}): Vector3f =
+    vector3f(1.0f, block).also { scale = it }
 
 public inline fun DisplayElement.scale(d: Float, block: Vector3f.() -> Unit = {}): Vector3f =
     vector3f(d, block).also { scale = it }
