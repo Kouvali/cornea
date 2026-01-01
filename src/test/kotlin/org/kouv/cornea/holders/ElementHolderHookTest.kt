@@ -132,6 +132,7 @@ class ElementHolderHookTest {
 
         // when
         elementHolder.removeElement(mockElement)
+        elementHolder.tick()
 
         // then
         verify { mockAttachment.destroy() }
@@ -149,6 +150,7 @@ class ElementHolderHookTest {
 
         // when
         elementHolder.removeElement(mockElement)
+        elementHolder.tick()
 
         // then
         verify(exactly = 0) { mockAttachment.destroy() }

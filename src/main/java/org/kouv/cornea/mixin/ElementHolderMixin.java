@@ -34,6 +34,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
     @Unique
     private boolean cornea$autoDestroyIfEmpty = false;
+    @Unique
+    private boolean cornea$shouldDestroy = false;
 
     @Shadow
     @Final
@@ -208,15 +210,27 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Inject(
+            method = "tick",
+            at = @At(value = "HEAD"),
+            cancellable = true
+    )
+    private void cornea$applyAutoDestroy(CallbackInfo ci) {
+        if (cornea$shouldDestroy) {
+            destroy();
+            ci.cancel();
+        }
+    }
+
+    @Inject(
             method = "removeElementWithoutUpdates",
             at = @At(value = "RETURN")
     )
-    private void cornea$destroyIfEmpty(VirtualElement element, CallbackInfoReturnable<Boolean> cir) {
+    private void cornea$markForDestruction(VirtualElement element, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ() &&
                 cornea$isAutoDestroyIfEmpty() &&
                 elements.isEmpty()
         ) {
-            destroy();
+            cornea$shouldDestroy = true;
         }
     }
 }
