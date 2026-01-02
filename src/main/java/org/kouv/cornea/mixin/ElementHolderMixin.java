@@ -35,7 +35,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     @Unique
     private boolean cornea$autoDestroyIfEmpty = false;
     @Unique
-    private boolean cornea$markedForDestruction = false;
+    private boolean cornea$shouldDestroy = false;
 
     @Shadow
     @Final
@@ -100,16 +100,6 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     @Override
     public void cornea$setAutoDestroyIfEmpty(boolean autoDestroyIfEmpty) {
         cornea$autoDestroyIfEmpty = autoDestroyIfEmpty;
-    }
-
-    @Override
-    public boolean cornea$isMarkedForDestruction() {
-        return cornea$markedForDestruction;
-    }
-
-    @Override
-    public void cornea$setMarkedForDestruction(boolean markedForDestruction) {
-        cornea$markedForDestruction = markedForDestruction;
     }
 
     @Inject(
@@ -225,7 +215,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             cancellable = true
     )
     private void cornea$applyAutoDestroy(CallbackInfo ci) {
-        if (cornea$markedForDestruction) {
+        if (cornea$shouldDestroy) {
             destroy();
             ci.cancel();
         }
@@ -237,7 +227,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     )
     private void cornea$markForDestruction(VirtualElement element, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ() && cornea$isAutoDestroyIfEmpty() && elements.isEmpty()) {
-            cornea$markedForDestruction = true;
+            cornea$shouldDestroy = true;
         }
     }
 }

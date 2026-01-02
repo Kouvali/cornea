@@ -26,10 +26,6 @@ public interface ElementHolderHook {
 
     void cornea$setAutoDestroyIfEmpty(boolean autoDestroyIfEmpty);
 
-    boolean cornea$isMarkedForDestruction();
-
-    void cornea$setMarkedForDestruction(boolean markedForDestruction);
-
     @FunctionalInterface
     interface StartWatchingListener {
         void onStartWatching(ServerPlayNetworkHandler networkHandler);

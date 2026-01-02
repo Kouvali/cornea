@@ -272,14 +272,6 @@ public var ElementHolder.autoDestroyIfEmpty: Boolean
         (this as ElementHolderHook).`cornea$setAutoDestroyIfEmpty`(value)
     }
 
-public var ElementHolder.isMarkedForDestruction: Boolean
-    get() {
-        return (this as ElementHolderHook).`cornea$isMarkedForDestruction`()
-    }
-    set(value) {
-        (this as ElementHolderHook).`cornea$setMarkedForDestruction`(value)
-    }
-
 public fun ElementHolder.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
