@@ -155,4 +155,18 @@ class ElementHolderHookTest {
         // then
         verify(exactly = 0) { mockAttachment.destroy() }
     }
+
+    @Test
+    fun `tick should destroy holder when markedForDestruction is set manually`() {
+        // given
+        val mockAttachment = mockk<HolderAttachment>(relaxed = true)
+        elementHolder.attachment = mockAttachment
+
+        // when
+        elementHolderHook.`cornea$setMarkedForDestruction`(true)
+        elementHolder.tick()
+
+        // then
+        verify { mockAttachment.destroy() }
+    }
 }
