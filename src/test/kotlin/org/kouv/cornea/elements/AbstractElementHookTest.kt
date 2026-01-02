@@ -70,14 +70,14 @@ class AbstractElementHookTest {
         val drag = 0.8
 
         elementHolder.attachment = mockkAttachment
-        abstractElement.velocity = velocity
-        abstractElement.drag = drag
+        abstractElementHook.`cornea$setVelocity`(velocity)
+        abstractElementHook.`cornea$setDrag`(drag)
 
         // when
         elementHolder.tick()
 
         // then
-        assertEquals(velocity.multiply(drag), abstractElement.velocity)
+        assertEquals(velocity.multiply(drag), abstractElementHook.`cornea$getVelocity`())
     }
 
     @Test
@@ -89,7 +89,7 @@ class AbstractElementHookTest {
 
         elementHolder.attachment = mockkAttachment
         abstractElement.offset = offset
-        abstractElement.gravity = gravity
+        abstractElementHook.`cornea$setGravity`(gravity)
 
         // when
         elementHolder.tick()
@@ -107,7 +107,7 @@ class AbstractElementHookTest {
 
         elementHolder.attachment = mockkAttachment
         abstractElement.offset = offset
-        abstractElement.velocity = velocity
+        abstractElementHook.`cornea$setVelocity`(velocity)
 
         // when
         elementHolder.tick()
