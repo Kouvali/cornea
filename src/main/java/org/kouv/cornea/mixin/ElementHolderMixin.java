@@ -202,6 +202,11 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
                 hook.cornea$setOffsetVelocity(hook.cornea$getOffsetVelocity().subtract(0, offsetGravity, 0));
             }
 
+            double offsetDrag = hook.cornea$getOffsetDrag();
+            if (Math.abs(offsetDrag - 1.0) > 1E-6) {
+                hook.cornea$setOffsetVelocity(hook.cornea$getOffsetVelocity().multiply(offsetDrag));
+            }
+
             Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();
             if (offsetVelocity.lengthSquared() > 1E-6) {
                 element.setOffset(element.getOffset().add(offsetVelocity));

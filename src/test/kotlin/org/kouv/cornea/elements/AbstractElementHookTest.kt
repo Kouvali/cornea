@@ -63,6 +63,24 @@ class AbstractElementHookTest {
     }
 
     @Test
+    fun `tick should apply drag to velocity when attachment is not null`() {
+        // given
+        val mockkAttachment = mockk<HolderAttachment>(relaxed = true)
+        val offsetVelocity = Vec3d(1.0, 2.0, 3.0)
+        val offsetDrag = 0.8
+
+        elementHolder.attachment = mockkAttachment
+        abstractElement.offsetVelocity = offsetVelocity
+        abstractElement.offsetDrag = offsetDrag
+
+        // when
+        elementHolder.tick()
+
+        // then
+        assertEquals(offsetVelocity.multiply(offsetDrag), abstractElement.offsetVelocity)
+    }
+
+    @Test
     fun `tick should apply gravity to offset when attachment is not null`() {
         // given
         val mockkAttachment = mockk<HolderAttachment>(relaxed = true)

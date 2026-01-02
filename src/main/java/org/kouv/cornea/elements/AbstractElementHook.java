@@ -23,6 +23,10 @@ public interface AbstractElementHook {
 
     void cornea$removeTickListener(TickListener listener);
 
+    double cornea$getOffsetDrag();
+
+    void cornea$setOffsetDrag(double drag);
+
     double cornea$getOffsetGravity();
 
     void cornea$setOffsetGravity(double gravity);
