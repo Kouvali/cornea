@@ -220,10 +220,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             at = @At(value = "RETURN")
     )
     private void cornea$markForDestruction(VirtualElement element, CallbackInfoReturnable<Boolean> cir) {
-        if (cir.getReturnValueZ() &&
-                cornea$isAutoDestroyIfEmpty() &&
-                elements.isEmpty()
-        ) {
+        if (cir.getReturnValueZ() && cornea$isAutoDestroyIfEmpty() && elements.isEmpty()) {
             cornea$shouldDestroy = true;
         }
     }
