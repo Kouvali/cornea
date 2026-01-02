@@ -8,7 +8,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kouv.cornea.tests.FabricExtension
-import kotlin.test.*
+import kotlin.test.Test
 
 @ExtendWith(FabricExtension::class)
 class ElementHolderHookTest {

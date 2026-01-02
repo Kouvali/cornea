@@ -1,10 +1,6 @@
 package org.kouv.cornea.math
 
-import org.joml.AxisAngle4d
-import org.joml.AxisAngle4f
-import org.joml.Quaterniondc
-import org.joml.Quaternionf
-import org.joml.Quaternionfc
+import org.joml.*
 
 public inline fun quaternionf(block: Quaternionfc.() -> Unit = {}): Quaternionf = Quaternionf().apply(block)
 
