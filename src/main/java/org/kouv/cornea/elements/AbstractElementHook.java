@@ -23,17 +23,17 @@ public interface AbstractElementHook {
 
     void cornea$removeTickListener(TickListener listener);
 
-    double cornea$getOffsetDrag();
+    double cornea$getDrag();
 
-    void cornea$setOffsetDrag(double drag);
+    void cornea$setDrag(double drag);
 
-    double cornea$getOffsetGravity();
+    double cornea$getGravity();
 
-    void cornea$setOffsetGravity(double gravity);
+    void cornea$setGravity(double gravity);
 
-    Vec3d cornea$getOffsetVelocity();
+    Vec3d cornea$getVelocity();
 
-    void cornea$setOffsetVelocity(Vec3d velocity);
+    void cornea$setVelocity(Vec3d velocity);
 
     @FunctionalInterface
     interface StartWatchingListener {

@@ -66,18 +66,18 @@ class AbstractElementHookTest {
     fun `tick should apply drag to velocity when attachment is not null`() {
         // given
         val mockkAttachment = mockk<HolderAttachment>(relaxed = true)
-        val offsetVelocity = Vec3d(1.0, 2.0, 3.0)
-        val offsetDrag = 0.8
+        val velocity = Vec3d(1.0, 2.0, 3.0)
+        val drag = 0.8
 
         elementHolder.attachment = mockkAttachment
-        abstractElement.offsetVelocity = offsetVelocity
-        abstractElement.offsetDrag = offsetDrag
+        abstractElement.velocity = velocity
+        abstractElement.drag = drag
 
         // when
         elementHolder.tick()
 
         // then
-        assertEquals(offsetVelocity.multiply(offsetDrag), abstractElement.offsetVelocity)
+        assertEquals(velocity.multiply(drag), abstractElement.velocity)
     }
 
     @Test
@@ -85,17 +85,17 @@ class AbstractElementHookTest {
         // given
         val mockkAttachment = mockk<HolderAttachment>(relaxed = true)
         val offset = Vec3d(1.0, 2.0, 3.0)
-        val offsetGravity = 0.05
+        val gravity = 0.05
 
         elementHolder.attachment = mockkAttachment
         abstractElement.offset = offset
-        abstractElement.offsetGravity = offsetGravity
+        abstractElement.gravity = gravity
 
         // when
         elementHolder.tick()
 
         // then
-        assertEquals(offset.subtract(0.0, offsetGravity, 0.0), abstractElement.offset)
+        assertEquals(offset.subtract(0.0, gravity, 0.0), abstractElement.offset)
     }
 
     @Test
@@ -103,17 +103,17 @@ class AbstractElementHookTest {
         // given
         val mockkAttachment = mockk<HolderAttachment>(relaxed = true)
         val offset = Vec3d(1.0, 2.0, 3.0)
-        val offsetVelocity = Vec3d(3.0, 2.0, 1.0)
+        val velocity = Vec3d(3.0, 2.0, 1.0)
 
         elementHolder.attachment = mockkAttachment
         abstractElement.offset = offset
-        abstractElement.offsetVelocity = offsetVelocity
+        abstractElement.velocity = velocity
 
         // when
         elementHolder.tick()
 
         // then
-        assertEquals(offset.add(offsetVelocity), abstractElement.offset)
+        assertEquals(offset.add(velocity), abstractElement.offset)
     }
 
     @Test

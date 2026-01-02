@@ -93,28 +93,28 @@ public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() ->
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
-public var AbstractElement.offsetDrag: Double
+public var AbstractElement.drag: Double
     get() {
-        return (this as AbstractElementHook).`cornea$getOffsetDrag`()
+        return (this as AbstractElementHook).`cornea$getDrag`()
     }
     set(value) {
-        (this as AbstractElementHook).`cornea$setOffsetDrag`(value)
+        (this as AbstractElementHook).`cornea$setDrag`(value)
     }
 
-public var AbstractElement.offsetGravity: Double
+public var AbstractElement.gravity: Double
     get() {
-        return (this as AbstractElementHook).`cornea$getOffsetGravity`()
+        return (this as AbstractElementHook).`cornea$getGravity`()
     }
     set(value) {
-        (this as AbstractElementHook).`cornea$setOffsetGravity`(value)
+        (this as AbstractElementHook).`cornea$setGravity`(value)
     }
 
-public var AbstractElement.offsetVelocity: Vec3d
+public var AbstractElement.velocity: Vec3d
     get() {
-        return (this as AbstractElementHook).`cornea$getOffsetVelocity`()
+        return (this as AbstractElementHook).`cornea$getVelocity`()
     }
     set(value) {
-        (this as AbstractElementHook).`cornea$setOffsetVelocity`(value)
+        (this as AbstractElementHook).`cornea$setVelocity`(value)
     }
 
 public val DisplayElement.transformation: Matrix4fc

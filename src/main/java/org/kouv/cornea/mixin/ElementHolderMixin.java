@@ -195,21 +195,21 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
                     target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V"
             )
     )
-    private void cornea$applyElementOffsetPhysics(CallbackInfo ci, @Local(name = "e") VirtualElement element) {
+    private void cornea$applyElementPhysics(CallbackInfo ci, @Local(name = "e") VirtualElement element) {
         if (element instanceof AbstractElementHook hook) {
-            double offsetGravity = hook.cornea$getOffsetGravity();
-            if (Math.abs(offsetGravity) > 1E-6) {
-                hook.cornea$setOffsetVelocity(hook.cornea$getOffsetVelocity().subtract(0, offsetGravity, 0));
+            double gravity = hook.cornea$getGravity();
+            if (Math.abs(gravity) > 1E-6) {
+                hook.cornea$setVelocity(hook.cornea$getVelocity().subtract(0, gravity, 0));
             }
 
-            double offsetDrag = hook.cornea$getOffsetDrag();
-            if (Math.abs(offsetDrag - 1.0) > 1E-6) {
-                hook.cornea$setOffsetVelocity(hook.cornea$getOffsetVelocity().multiply(offsetDrag));
+            double drag = hook.cornea$getDrag();
+            if (Math.abs(drag - 1.0) > 1E-6) {
+                hook.cornea$setVelocity(hook.cornea$getVelocity().multiply(drag));
             }
 
-            Vec3d offsetVelocity = hook.cornea$getOffsetVelocity();
-            if (offsetVelocity.lengthSquared() > 1E-6) {
-                element.setOffset(element.getOffset().add(offsetVelocity));
+            Vec3d velocity = hook.cornea$getVelocity();
+            if (velocity.lengthSquared() > 1E-6) {
+                element.setOffset(element.getOffset().add(velocity));
             }
         }
     }

@@ -21,11 +21,11 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
     @Unique
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
     @Unique
-    private double cornea$offsetDrag = 1.0;
+    private double cornea$drag = 1.0;
     @Unique
-    private double cornea$offsetGravity = 0.0;
+    private double cornea$gravity = 0.0;
     @Unique
-    private Vec3d cornea$offsetVelocity = Vec3d.ZERO;
+    private Vec3d cornea$velocity = Vec3d.ZERO;
 
     @Override
     public void cornea$triggerStartWatchingListeners(ServerPlayNetworkHandler networkHandler) {
@@ -81,33 +81,33 @@ public abstract class AbstractElementMixin implements AbstractElementHook, Virtu
     }
 
     @Override
-    public double cornea$getOffsetDrag() {
-        return cornea$offsetDrag;
+    public double cornea$getDrag() {
+        return cornea$drag;
     }
 
     @Override
-    public void cornea$setOffsetDrag(double drag) {
-        cornea$offsetDrag = drag;
+    public void cornea$setDrag(double drag) {
+        cornea$drag = drag;
     }
 
     @Override
-    public double cornea$getOffsetGravity() {
-        return cornea$offsetGravity;
+    public double cornea$getGravity() {
+        return cornea$gravity;
     }
 
     @Override
-    public void cornea$setOffsetGravity(double gravity) {
-        cornea$offsetGravity = gravity;
+    public void cornea$setGravity(double gravity) {
+        cornea$gravity = gravity;
     }
 
     @Override
-    public Vec3d cornea$getOffsetVelocity() {
-        return cornea$offsetVelocity;
+    public Vec3d cornea$getVelocity() {
+        return cornea$velocity;
     }
 
     @Override
-    public void cornea$setOffsetVelocity(Vec3d velocity) {
+    public void cornea$setVelocity(Vec3d velocity) {
         Objects.requireNonNull(velocity);
-        cornea$offsetVelocity = velocity;
+        cornea$velocity = velocity;
     }
 }
