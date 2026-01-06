@@ -3,9 +3,8 @@
   "package": "org.kouv.cornea.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractElementMixin",
-    "DisplayElementMixin",
-    "ElementHolderMixin"
+    "ElementHolderMixin",
+    "VirtualElementMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,13 +1,10 @@
 package org.kouv.cornea.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
-import org.kouv.cornea.elements.AbstractElementHook;
 import org.kouv.cornea.holders.ElementHolderHook;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -111,12 +108,6 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (int index = elements.size() - 1; index >= 0; index--) {
-            if (elements.get(index) instanceof AbstractElementHook hook) {
-                hook.cornea$triggerStartWatchingListeners(networkHandler);
-            }
-        }
-
         for (StartWatchingListener listener : cornea$startWatchingListeners) {
             listener.onStartWatching(networkHandler);
         }
@@ -129,12 +120,6 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private void cornea$invokeStopWatchingListeners(ServerPlayNetworkHandler networkHandler, CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValueZ()) {
             return;
-        }
-
-        for (int index = elements.size() - 1; index >= 0; index--) {
-            if (elements.get(index) instanceof AbstractElementHook hook) {
-                hook.cornea$triggerStopWatchingListeners(networkHandler);
-            }
         }
 
         for (StopWatchingListener listener : cornea$stopWatchingListeners) {
@@ -171,40 +156,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             )
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
-        for (int index = elements.size() - 1; index >= 0; index--) {
-            if (elements.get(index) instanceof AbstractElementHook hook) {
-                hook.cornea$triggerTickListeners();
-            }
-        }
-
         for (TickListener listener : cornea$tickListeners) {
             listener.onTick();
-        }
-    }
-
-    @Inject(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/elements/VirtualElement;tick()V"
-            )
-    )
-    private void cornea$applyElementPhysics(CallbackInfo ci, @Local(name = "e") VirtualElement element) {
-        if (element instanceof AbstractElementHook hook) {
-            double drag = hook.cornea$getDrag();
-            if (Math.abs(drag - 1.0) > 1E-6) {
-                hook.cornea$setVelocity(hook.cornea$getVelocity().multiply(drag));
-            }
-
-            double gravity = hook.cornea$getGravity();
-            if (Math.abs(gravity) > 1E-6) {
-                hook.cornea$setVelocity(hook.cornea$getVelocity().subtract(0, gravity, 0));
-            }
-
-            Vec3d velocity = hook.cornea$getVelocity();
-            if (velocity.lengthSquared() > 1E-6) {
-                element.setOffset(element.getOffset().add(velocity));
-            }
         }
     }
 

@@ -4,20 +4,14 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.Vec3d;
 
 @SuppressWarnings("unused")
-public interface AbstractElementHook {
-    void cornea$triggerStartWatchingListeners(ServerPlayNetworkHandler networkHandler);
-
+public interface VirtualElementHook {
     void cornea$addStartWatchingListener(StartWatchingListener listener);
 
     void cornea$removeStartWatchingListener(StartWatchingListener listener);
 
-    void cornea$triggerStopWatchingListeners(ServerPlayNetworkHandler networkHandler);
-
     void cornea$addStopWatchingListener(StopWatchingListener listener);
 
     void cornea$removeStopWatchingListener(StopWatchingListener listener);
-
-    void cornea$triggerTickListeners();
 
     void cornea$addTickListener(TickListener listener);
 

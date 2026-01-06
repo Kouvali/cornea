@@ -90,32 +90,32 @@ public inline fun textDisplayElement(block: TextDisplayElement.() -> Unit = {}):
 public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() -> Unit = {}): TextDisplayElement =
     TextDisplayElement(text).apply(block)
 
+public var VirtualElement.drag: Double
+    get() {
+        return (this as VirtualElementHook).`cornea$getDrag`()
+    }
+    set(value) {
+        (this as VirtualElementHook).`cornea$setDrag`(value)
+    }
+
+public var VirtualElement.gravity: Double
+    get() {
+        return (this as VirtualElementHook).`cornea$getGravity`()
+    }
+    set(value) {
+        (this as VirtualElementHook).`cornea$setGravity`(value)
+    }
+
+public var VirtualElement.velocity: Vec3d
+    get() {
+        return (this as VirtualElementHook).`cornea$getVelocity`()
+    }
+    set(value) {
+        (this as VirtualElementHook).`cornea$setVelocity`(value)
+    }
+
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
-
-public var AbstractElement.drag: Double
-    get() {
-        return (this as AbstractElementHook).`cornea$getDrag`()
-    }
-    set(value) {
-        (this as AbstractElementHook).`cornea$setDrag`(value)
-    }
-
-public var AbstractElement.gravity: Double
-    get() {
-        return (this as AbstractElementHook).`cornea$getGravity`()
-    }
-    set(value) {
-        (this as AbstractElementHook).`cornea$setGravity`(value)
-    }
-
-public var AbstractElement.velocity: Vec3d
-    get() {
-        return (this as AbstractElementHook).`cornea$getVelocity`()
-    }
-    set(value) {
-        (this as AbstractElementHook).`cornea$setVelocity`(value)
-    }
 
 public val DisplayElement.transformation: Matrix4fc
     get() {
@@ -307,15 +307,15 @@ public class ElementStartWatchingScope @PublishedApi internal constructor(
     public val player: ServerPlayerEntity get() = networkHandler.player
 }
 
-public inline fun AbstractElement.onStartWatching(crossinline block: ElementStartWatchingScope.() -> Unit): Disposable {
-    this as AbstractElementHook
+public inline fun VirtualElement.onStartWatching(crossinline block: ElementStartWatchingScope.() -> Unit): Disposable {
+    this as VirtualElementHook
 
-    lateinit var listener: AbstractElementHook.StartWatchingListener
+    lateinit var listener: VirtualElementHook.StartWatchingListener
     val disposable = Disposable {
         `cornea$removeStartWatchingListener`(listener)
     }
 
-    listener = AbstractElementHook.StartWatchingListener { networkHandler ->
+    listener = VirtualElementHook.StartWatchingListener { networkHandler ->
         ElementStartWatchingScope(disposable, networkHandler).block()
     }
 
@@ -330,15 +330,15 @@ public class ElementStopWatchingScope @PublishedApi internal constructor(
     public val player: ServerPlayerEntity get() = networkHandler.player
 }
 
-public inline fun AbstractElement.onStopWatching(crossinline block: ElementStopWatchingScope.() -> Unit): Disposable {
-    this as AbstractElementHook
+public inline fun VirtualElement.onStopWatching(crossinline block: ElementStopWatchingScope.() -> Unit): Disposable {
+    this as VirtualElementHook
 
-    lateinit var listener: AbstractElementHook.StopWatchingListener
+    lateinit var listener: VirtualElementHook.StopWatchingListener
     val disposable = Disposable {
         `cornea$removeStopWatchingListener`(listener)
     }
 
-    listener = AbstractElementHook.StopWatchingListener { networkHandler ->
+    listener = VirtualElementHook.StopWatchingListener { networkHandler ->
         ElementStopWatchingScope(disposable, networkHandler).block()
     }
 
@@ -351,16 +351,16 @@ public class ElementTickScope @PublishedApi internal constructor(
     public val tickCount: Int
 ) : Disposable by disposable
 
-public inline fun AbstractElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
-    this as AbstractElementHook
+public inline fun VirtualElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
+    this as VirtualElementHook
 
-    lateinit var listener: AbstractElementHook.TickListener
+    lateinit var listener: VirtualElementHook.TickListener
     val disposable = Disposable {
         `cornea$removeTickListener`(listener)
     }
 
     var tickCount = 0
-    listener = AbstractElementHook.TickListener {
+    listener = VirtualElementHook.TickListener {
         ElementTickScope(disposable, tickCount++).block()
     }
 
