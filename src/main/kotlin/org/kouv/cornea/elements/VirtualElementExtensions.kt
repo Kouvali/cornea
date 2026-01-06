@@ -119,7 +119,10 @@ public var AbstractElement.velocity: Vec3d
 
 public val DisplayElement.transformation: Matrix4fc
     get() {
-        return (this as DisplayElementHook).`cornea$getTransformation`()
+        return matrix4f {
+            translationRotateScale(translation, leftRotation, scale)
+            rotate(rightRotation)
+        }
     }
 
 public inline fun DisplayElement.transformation(block: Matrix4f.() -> Unit = {}): Matrix4f =
