@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = DisplayElement.class, remap = false)
 public abstract class DisplayElementMixin implements DisplayElementHook {
     @Unique
-    private final Matrix4f koto$cachedMatrix = new Matrix4f();
+    private final Matrix4f cornea$cachedMatrix = new Matrix4f();
     @Unique
-    private boolean koto$matrixDirty = true;
+    private boolean cornea$matrixDirty = true;
 
     @Shadow
     public abstract Vector3fc getTranslation();
@@ -34,18 +34,18 @@ public abstract class DisplayElementMixin implements DisplayElementHook {
 
     @Override
     public Matrix4fc cornea$getTransformation() {
-        if (!koto$matrixDirty) {
-            return koto$cachedMatrix;
+        if (!cornea$matrixDirty) {
+            return cornea$cachedMatrix;
         }
 
-        koto$cachedMatrix.translationRotateScale(
+        cornea$cachedMatrix.translationRotateScale(
                 getTranslation(),
                 getLeftRotation(),
                 getScale()
         );
-        koto$cachedMatrix.rotate(getRightRotation());
-        koto$matrixDirty = false;
-        return koto$cachedMatrix;
+        cornea$cachedMatrix.rotate(getRightRotation());
+        cornea$matrixDirty = false;
+        return cornea$cachedMatrix;
     }
 
     @Inject(
@@ -53,8 +53,8 @@ public abstract class DisplayElementMixin implements DisplayElementHook {
             at = @At(value = "HEAD")
     )
     private void cornea$markAsNotDirty(Matrix4f matrix, CallbackInfo ci) {
-        koto$cachedMatrix.set(matrix);
-        koto$matrixDirty = false;
+        cornea$cachedMatrix.set(matrix);
+        cornea$matrixDirty = false;
     }
 
     @Inject(
@@ -69,6 +69,6 @@ public abstract class DisplayElementMixin implements DisplayElementHook {
             at = @At(value = "HEAD")
     )
     private void cornea$markAsDirty(CallbackInfo ci) {
-        koto$matrixDirty = true;
+        cornea$matrixDirty = true;
     }
 }
