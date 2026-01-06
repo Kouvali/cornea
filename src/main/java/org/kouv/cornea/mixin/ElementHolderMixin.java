@@ -221,6 +221,16 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Inject(
+            method = "addElementWithoutUpdates",
+            at = @At(value = "RETURN")
+    )
+    private void cornea$cancelAutoDestroy(VirtualElement element, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValueZ()) {
+            cornea$markedForDestruction = false;
+        }
+    }
+
+    @Inject(
             method = "removeElementWithoutUpdates",
             at = @At(value = "RETURN")
     )
