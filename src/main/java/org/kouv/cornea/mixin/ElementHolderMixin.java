@@ -191,14 +191,14 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     )
     private void cornea$applyElementPhysics(CallbackInfo ci, @Local(name = "e") VirtualElement element) {
         if (element instanceof AbstractElementHook hook) {
-            double gravity = hook.cornea$getGravity();
-            if (Math.abs(gravity) > 1E-6) {
-                hook.cornea$setVelocity(hook.cornea$getVelocity().subtract(0, gravity, 0));
-            }
-
             double drag = hook.cornea$getDrag();
             if (Math.abs(drag - 1.0) > 1E-6) {
                 hook.cornea$setVelocity(hook.cornea$getVelocity().multiply(drag));
+            }
+
+            double gravity = hook.cornea$getGravity();
+            if (Math.abs(gravity) > 1E-6) {
+                hook.cornea$setVelocity(hook.cornea$getVelocity().subtract(0, gravity, 0));
             }
 
             Vec3d velocity = hook.cornea$getVelocity();
