@@ -111,8 +111,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (VirtualElement element : elements.toArray(new VirtualElement[0])) {
-            if (element instanceof AbstractElementHook hook) {
+        for (int index = elements.size() - 1; index >= 0; index--) {
+            if (elements.get(index) instanceof AbstractElementHook hook) {
                 hook.cornea$triggerStartWatchingListeners(networkHandler);
             }
         }
@@ -131,8 +131,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (VirtualElement element : elements.toArray(new VirtualElement[0])) {
-            if (element instanceof AbstractElementHook hook) {
+        for (int index = elements.size() - 1; index >= 0; index--) {
+            if (elements.get(index) instanceof AbstractElementHook hook) {
                 hook.cornea$triggerStopWatchingListeners(networkHandler);
             }
         }
@@ -171,8 +171,8 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             )
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
-        for (VirtualElement element : elements.toArray(new VirtualElement[0])) {
-            if (element instanceof AbstractElementHook hook) {
+        for (int index = elements.size() - 1; index >= 0; index--) {
+            if (elements.get(index) instanceof AbstractElementHook hook) {
                 hook.cornea$triggerTickListeners();
             }
         }
