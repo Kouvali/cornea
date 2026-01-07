@@ -32,6 +32,8 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     @Unique
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
     @Unique
+    private boolean cornea$markedForRemoval = false;
+    @Unique
     private double cornea$drag = 1.0;
     @Unique
     private double cornea$gravity = 0.0;
@@ -72,6 +74,11 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     public void cornea$removeTickListener(TickListener listener) {
         Objects.requireNonNull(listener);
         cornea$tickListeners.remove(listener);
+    }
+
+    @Override
+    public void cornea$markForRemoval() {
+        cornea$markedForRemoval = true;
     }
 
     @Override
@@ -132,6 +139,20 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     private void cornea$invokeTickListeners(CallbackInfo ci) {
         for (TickListener listener : cornea$tickListeners) {
             listener.onTick();
+        }
+    }
+
+    @Inject(
+            method = "tick",
+            at = @At(value = "HEAD"),
+            cancellable = true
+    )
+    private void cornea$processPendingRemoval(CallbackInfo ci) {
+        if (cornea$markedForRemoval) {
+            ci.cancel();
+            if (getHolder() != null) {
+                getHolder().removeElement(this);
+            }
         }
     }
 

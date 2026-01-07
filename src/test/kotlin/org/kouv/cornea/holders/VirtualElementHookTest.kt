@@ -13,6 +13,7 @@ import org.kouv.cornea.elements.itemDisplayElement
 import org.kouv.cornea.tests.FabricExtension
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @ExtendWith(FabricExtension::class)
 class VirtualElementHookTest {
@@ -79,6 +80,26 @@ class VirtualElementHookTest {
 
         // then
         verify { mockListener.onTick() }
+    }
+
+    @Test
+    fun `tick should remove element and cancel tick logic when marked for removal`() {
+        // given
+        val mockkAttachment = mockk<HolderAttachment>(relaxed = true)
+        val mockListener = mockk<VirtualElementHook.TickListener>()
+
+        every { mockListener.onTick() } just runs
+
+        elementHolder.attachment = mockkAttachment
+        virtualElementHook.`cornea$addTickListener`(mockListener)
+        virtualElementHook.`cornea$markForRemoval`()
+
+        // when
+        elementHolder.tick()
+
+        // then
+        assertTrue(virtualElement !in elementHolder.elements)
+        verify(exactly = 0) { mockListener.onTick() }
     }
 
     @Test

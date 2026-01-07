@@ -17,6 +17,8 @@ public interface VirtualElementHook {
 
     void cornea$removeTickListener(TickListener listener);
 
+    void cornea$markForRemoval();
+
     double cornea$getDrag();
 
     void cornea$setDrag(double drag);
