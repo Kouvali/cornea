@@ -22,10 +22,6 @@ public interface ElementHolderHook {
 
     void cornea$removeTickListener(TickListener listener);
 
-    boolean cornea$isAutoDestroyIfEmpty();
-
-    void cornea$setAutoDestroyIfEmpty(boolean autoDestroyIfEmpty);
-
     @FunctionalInterface
     interface StartWatchingListener {
         void onStartWatching(ServerPlayNetworkHandler networkHandler);

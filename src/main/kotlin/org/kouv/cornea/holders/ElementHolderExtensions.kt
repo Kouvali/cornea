@@ -264,14 +264,6 @@ public inline fun ElementHolder.textDisplayElement(
     block: TextDisplayElement.() -> Unit = {}
 ): TextDisplayElement = addElement(org.kouv.cornea.elements.textDisplayElement(text, block))
 
-public var ElementHolder.autoDestroyIfEmpty: Boolean
-    get() {
-        return (this as ElementHolderHook).`cornea$isAutoDestroyIfEmpty`()
-    }
-    set(value) {
-        (this as ElementHolderHook).`cornea$setAutoDestroyIfEmpty`(value)
-    }
-
 public fun ElementHolder.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
