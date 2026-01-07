@@ -22,6 +22,8 @@ public interface ElementHolderHook {
 
     void cornea$removeTickListener(TickListener listener);
 
+    void cornea$markForDestruction();
+
     @FunctionalInterface
     interface StartWatchingListener {
         void onStartWatching(ServerPlayNetworkHandler networkHandler);

@@ -118,4 +118,24 @@ class ElementHolderHookTest {
         // then
         verify { mockListener wasNot called }
     }
+
+    @Test
+    fun `tick should destroy holder and cancel tick logic when marked for destruction`() {
+        // given
+        val mockAttachment = mockk<HolderAttachment>(relaxed = true)
+        val mockListener = mockk<ElementHolderHook.TickListener>()
+
+        every { mockListener.onTick() } just runs
+
+        elementHolder.attachment = mockAttachment
+        elementHolderHook.`cornea$addTickListener`(mockListener)
+        elementHolderHook.`cornea$markForDestruction`()
+
+        // when
+        elementHolder.tick()
+
+        // then
+        verify { mockAttachment.destroy() }
+        verify(exactly = 0) { mockListener.onTick() }
+    }
 }

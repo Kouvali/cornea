@@ -6,6 +6,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.holders.ElementHolderHook;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,6 +27,11 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private final List<AttachmentChangeListener> cornea$attachmentChangeListeners = new CopyOnWriteArrayList<>();
     @Unique
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
+    @Unique
+    private boolean cornea$markedForDestruction = false;
+
+    @Shadow
+    public abstract void destroy();
 
     @Override
     public void cornea$addStartWatchingListener(StartWatchingListener listener) {
@@ -73,6 +79,11 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     public void cornea$removeTickListener(TickListener listener) {
         Objects.requireNonNull(listener);
         cornea$tickListeners.remove(listener);
+    }
+
+    @Override
+    public void cornea$markForDestruction() {
+        cornea$markedForDestruction = true;
     }
 
     @Inject(
@@ -134,6 +145,18 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private void cornea$invokeTickListeners(CallbackInfo ci) {
         for (TickListener listener : cornea$tickListeners) {
             listener.onTick();
+        }
+    }
+
+    @Inject(
+            method = "tick",
+            at = @At(value = "HEAD"),
+            cancellable = true
+    )
+    private void cornea$processPendingDestruction(CallbackInfo ci) {
+        if (cornea$markedForDestruction) {
+            ci.cancel();
+            destroy();
         }
     }
 }
