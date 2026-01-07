@@ -2,17 +2,22 @@ package org.kouv.cornea.mixin;
 
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
+import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.holders.ElementHolderHook;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -29,6 +34,10 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
     @Unique
     private boolean cornea$markedForDestruction = false;
+
+    @Shadow
+    @Final
+    private List<VirtualElement> elements;
 
     @Shadow
     public abstract void destroy();
@@ -138,14 +147,25 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V",
-                    shift = At.Shift.AFTER
+                    target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;onTick()V"
             )
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
         for (TickListener listener : cornea$tickListeners) {
             listener.onTick();
         }
+    }
+
+    @Redirect(
+            method = "tick",
+            at = @At(
+                    value = "FIELD",
+                    target = "Leu/pb4/polymer/virtualentity/api/ElementHolder;elements:Ljava/util/List;",
+                    opcode = Opcodes.GETFIELD
+            )
+    )
+    private List<? extends VirtualElement> cornea$getElements(ElementHolder instance) {
+        return new ArrayList<>(elements);
     }
 
     @Inject(
