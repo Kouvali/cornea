@@ -129,7 +129,7 @@ class ElementHolderHookTest {
 
         elementHolder.attachment = mockAttachment
         elementHolderHook.`cornea$addTickListener`(mockListener)
-        elementHolderHook.`cornea$markForDestruction`()
+        elementHolderHook.`cornea$setMarkedForDestruction`(true)
 
         // when
         elementHolder.tick()

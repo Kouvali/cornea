@@ -92,7 +92,7 @@ class VirtualElementHookTest {
 
         elementHolder.attachment = mockkAttachment
         virtualElementHook.`cornea$addTickListener`(mockListener)
-        virtualElementHook.`cornea$markForRemoval`()
+        virtualElementHook.`cornea$setMarkedForRemoval`(true)
 
         // when
         elementHolder.tick()
