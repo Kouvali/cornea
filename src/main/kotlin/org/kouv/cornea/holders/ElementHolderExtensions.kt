@@ -264,7 +264,13 @@ public inline fun ElementHolder.textDisplayElement(
     block: TextDisplayElement.() -> Unit = {}
 ): TextDisplayElement = addElement(org.kouv.cornea.elements.textDisplayElement(text, block))
 
-public fun ElementHolder.markForDestruction(): Unit = (this as ElementHolderHook).`cornea$markForDestruction`()
+public var ElementHolder.markedForDestruction: Boolean
+    get() {
+        return (this as ElementHolderHook).`cornea$isMarkedForDestruction`()
+    }
+    set(value) {
+        (this as ElementHolderHook).`cornea$setMarkedForDestruction`(value)
+    }
 
 public fun ElementHolder.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())

@@ -82,8 +82,13 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Override
-    public void cornea$markForDestruction() {
-        cornea$markedForDestruction = true;
+    public boolean cornea$isMarkedForDestruction() {
+        return cornea$markedForDestruction;
+    }
+
+    @Override
+    public void cornea$setMarkedForDestruction(boolean marked) {
+        cornea$markedForDestruction = marked;
     }
 
     @Inject(

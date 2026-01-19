@@ -77,8 +77,13 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     }
 
     @Override
-    public void cornea$markForRemoval() {
-        cornea$markedForRemoval = true;
+    public boolean cornea$isMarkedForRemoval() {
+        return cornea$markedForRemoval;
+    }
+
+    @Override
+    public void cornea$setMarkedForRemoval(boolean marked) {
+        cornea$markedForRemoval = marked;
     }
 
     @Override
