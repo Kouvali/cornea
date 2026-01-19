@@ -343,10 +343,17 @@ public inline fun ElementHolder.onAttachmentChange(crossinline block: HolderAtta
     return disposable
 }
 
-public class HolderTickScope @PublishedApi internal constructor(
-    disposable: Disposable,
-    public val tickCount: Int
-) : Disposable by disposable
+public class HolderTickScope @PublishedApi internal constructor(disposable: Disposable) :
+    Disposable by disposable
+{
+    public var tickCount: Int = 0
+        private set
+
+    @PublishedApi
+    internal fun update() {
+        tickCount++
+    }
+}
 
 public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> Unit): Disposable {
     this as ElementHolderHook
@@ -356,9 +363,10 @@ public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> 
         `cornea$removeTickListener`(listener)
     }
 
-    var tickCount = 0
+    val scope = HolderTickScope(disposable)
     listener = ElementHolderHook.TickListener {
-        HolderTickScope(disposable, tickCount++).block()
+        scope.block()
+        scope.update()
     }
 
     `cornea$addTickListener`(listener)
