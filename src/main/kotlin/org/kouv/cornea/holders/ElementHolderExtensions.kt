@@ -71,7 +71,7 @@ public inline fun <reified T : VirtualElement> ElementHolder.filterElements(): L
     elements.filterIsInstance<T>()
 
 public inline fun <reified T : VirtualElement> ElementHolder.eachElement(block: T.() -> Unit): Unit =
-    filterElements<T>().forEach(block)
+    elements.forEach { element -> if (element is T) block(element) }
 
 @InternalPolymerApi
 public inline fun ElementHolder.blockBoundAttachment(
