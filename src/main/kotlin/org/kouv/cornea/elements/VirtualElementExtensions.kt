@@ -354,10 +354,17 @@ public inline fun VirtualElement.onStopWatching(crossinline block: ElementStopWa
     return disposable
 }
 
-public class ElementTickScope @PublishedApi internal constructor(
-    disposable: Disposable,
-    public val tickCount: Int
-) : Disposable by disposable
+public class ElementTickScope @PublishedApi internal constructor(disposable: Disposable) :
+    Disposable by disposable
+{
+    public var tickCount: Int = 0
+        private set
+
+    @PublishedApi
+    internal fun update() {
+        tickCount++
+    }
+}
 
 public inline fun VirtualElement.onTick(crossinline block: ElementTickScope.() -> Unit): Disposable {
     this as VirtualElementHook
@@ -367,9 +374,10 @@ public inline fun VirtualElement.onTick(crossinline block: ElementTickScope.() -
         `cornea$removeTickListener`(listener)
     }
 
-    var tickCount = 0
+    val scope = ElementTickScope(disposable)
     listener = VirtualElementHook.TickListener {
-        ElementTickScope(disposable, tickCount++).block()
+        scope.block()
+        scope.update()
     }
 
     `cornea$addTickListener`(listener)
