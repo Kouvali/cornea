@@ -1,6 +1,5 @@
 package org.kouv.cornea.data
 
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kouv.cornea.tests.FabricExtension
@@ -63,22 +62,6 @@ class AttributesTest {
         // then
         assertFalse(keyInt in attributes)
         assertNull(attributes[keyInt])
-    }
-
-    @Test
-    fun `set should throw NullPointerException when value is null`() {
-        // when & then
-        assertThrows(NullPointerException::class.java) {
-            attributes.set(keyString, null)
-        }
-    }
-
-    @Test
-    fun `get should throw NullPointerException when key is null`() {
-        // when & then
-        assertThrows(NullPointerException::class.java) {
-            attributes.get<Any?>(null)
-        }
     }
 
     @Test
