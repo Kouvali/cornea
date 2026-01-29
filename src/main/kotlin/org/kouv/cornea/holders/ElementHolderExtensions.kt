@@ -19,6 +19,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.WorldChunk
 import org.kouv.cornea.annotations.ExperimentalPolymerApi
 import org.kouv.cornea.annotations.InternalPolymerApi
+import org.kouv.cornea.data.Attributes
 import org.kouv.cornea.events.Disposable
 
 public inline fun elementHolder(block: ElementHolder.() -> Unit = {}): ElementHolder = ElementHolder().apply(block)
@@ -263,6 +264,11 @@ public inline fun ElementHolder.textDisplayElement(
     text: Text,
     block: TextDisplayElement.() -> Unit = {}
 ): TextDisplayElement = addElement(org.kouv.cornea.elements.textDisplayElement(text, block))
+
+public val ElementHolder.attributes: Attributes
+    get() {
+        return (this as ElementHolderHook).`cornea$getAttributes`()
+    }
 
 public var ElementHolder.markedForDestruction: Boolean
     get() {

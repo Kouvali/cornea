@@ -3,9 +3,12 @@ package org.kouv.cornea.holders;
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import org.jetbrains.annotations.Nullable;
+import org.kouv.cornea.data.Attributes;
 
 @SuppressWarnings("unused")
 public interface ElementHolderHook {
+    Attributes cornea$getAttributes();
+
     void cornea$addStartWatchingListener(StartWatchingListener listener);
 
     void cornea$removeStartWatchingListener(StartWatchingListener listener);

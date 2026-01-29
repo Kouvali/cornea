@@ -4,11 +4,14 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.Vec3d;
+import org.kouv.cornea.data.Attributes;
 
 import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public interface VirtualElementHook {
+    Attributes cornea$getAttributes();
+
     void cornea$addStartWatchingListener(StartWatchingListener listener);
 
     void cornea$removeStartWatchingListener(StartWatchingListener listener);

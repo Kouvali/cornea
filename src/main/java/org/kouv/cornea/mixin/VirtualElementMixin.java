@@ -5,6 +5,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import org.kouv.cornea.data.Attributes;
 import org.kouv.cornea.elements.VirtualElementHook;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,6 +27,8 @@ import java.util.function.Consumer;
 )
 public abstract class VirtualElementMixin implements VirtualElement, VirtualElementHook {
     @Unique
+    private final Attributes cornea$attributes = new Attributes();
+    @Unique
     private final List<StartWatchingListener> cornea$startWatchingListeners = new CopyOnWriteArrayList<>();
     @Unique
     private final List<StopWatchingListener> cornea$stopWatchingListeners = new CopyOnWriteArrayList<>();
@@ -39,6 +42,11 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     private double cornea$gravity = 0.0;
     @Unique
     private Vec3d cornea$velocity = Vec3d.ZERO;
+
+    @Override
+    public Attributes cornea$getAttributes() {
+        return cornea$attributes;
+    }
 
     @Override
     public void cornea$addStartWatchingListener(StartWatchingListener listener) {

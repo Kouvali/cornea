@@ -4,6 +4,7 @@ import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import org.jetbrains.annotations.Nullable;
+import org.kouv.cornea.data.Attributes;
 import org.kouv.cornea.holders.ElementHolderHook;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,6 +21,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Mixin(value = ElementHolder.class, remap = false)
 public abstract class ElementHolderMixin implements ElementHolderHook {
     @Unique
+    private final Attributes cornea$attributes = new Attributes();
+    @Unique
     private final List<StartWatchingListener> cornea$startWatchingListeners = new CopyOnWriteArrayList<>();
     @Unique
     private final List<StopWatchingListener> cornea$stopWatchingListeners = new CopyOnWriteArrayList<>();
@@ -32,6 +35,11 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
 
     @Shadow
     public abstract void destroy();
+
+    @Override
+    public Attributes cornea$getAttributes() {
+        return cornea$attributes;
+    }
 
     @Override
     public void cornea$addStartWatchingListener(StartWatchingListener listener) {

@@ -15,6 +15,7 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 import org.joml.*
+import org.kouv.cornea.data.Attributes
 import org.kouv.cornea.events.Disposable
 import org.kouv.cornea.math.matrix4f
 import org.kouv.cornea.math.quaternionf
@@ -91,6 +92,11 @@ public inline fun textDisplayElement(block: TextDisplayElement.() -> Unit = {}):
 
 public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() -> Unit = {}): TextDisplayElement =
     TextDisplayElement(text).apply(block)
+
+public val VirtualElement.attributes: Attributes
+    get() {
+        return (this as VirtualElementHook).`cornea$getAttributes`()
+    }
 
 public var VirtualElement.drag: Double
     get() {
