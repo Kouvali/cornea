@@ -1,15 +1,18 @@
-package org.kouv.cornea.holders
+package org.kouv.cornea.elements
 
 import eu.pb4.polymer.virtualentity.api.ElementHolder
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.verify
 import net.minecraft.server.network.ServerPlayNetworkHandler
 import net.minecraft.util.math.Vec3d
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
-import org.kouv.cornea.elements.VirtualElementHook
-import org.kouv.cornea.elements.itemDisplayElement
+import org.kouv.cornea.holders.elementHolder
 import org.kouv.cornea.tests.FabricExtension
 import kotlin.test.Test
 import kotlin.test.assertEquals
