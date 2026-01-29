@@ -35,7 +35,7 @@ class VirtualElementHookTest {
         val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
         val mockListener = mockk<VirtualElementHook.StartWatchingListener>()
 
-        every { mockListener.onStartWatching(any()) } just runs
+        every { mockListener.onStartWatching(any(), any()) } just runs
 
         virtualElementHook.`cornea$addStartWatchingListener`(mockListener)
 
@@ -43,7 +43,7 @@ class VirtualElementHookTest {
         elementHolder.startWatching(mockNetworkHandler)
 
         // then
-        verify { mockListener.onStartWatching(any()) }
+        verify { mockListener.onStartWatching(any(), any()) }
     }
 
     @Test
@@ -52,7 +52,7 @@ class VirtualElementHookTest {
         val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
         val mockListener = mockk<VirtualElementHook.StopWatchingListener>()
 
-        every { mockListener.onStopWatching(any()) } just runs
+        every { mockListener.onStopWatching(any(), any()) } just runs
 
         virtualElementHook.`cornea$addStopWatchingListener`(mockListener)
         elementHolder.startWatching(mockNetworkHandler)
@@ -61,7 +61,7 @@ class VirtualElementHookTest {
         elementHolder.stopWatching(mockNetworkHandler)
 
         // then
-        verify { mockListener.onStopWatching(any()) }
+        verify { mockListener.onStopWatching(any(), any()) }
     }
 
     @Test

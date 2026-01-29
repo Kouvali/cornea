@@ -7,6 +7,8 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.network.listener.ClientPlayPacketListener
+import net.minecraft.network.packet.Packet
 import net.minecraft.server.network.ServerPlayNetworkHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
@@ -310,9 +312,14 @@ public fun DisplayElement.startInterpolationIfDirty(duration: Int) {
 
 public class ElementStartWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val networkHandler: ServerPlayNetworkHandler
-) : Disposable by disposable {
+    public val networkHandler: ServerPlayNetworkHandler,
+    private val packetSender: (Packet<ClientPlayPacketListener>) -> Unit
+) :
+    Disposable by disposable
+{
     public val player: ServerPlayerEntity get() = networkHandler.player
+
+    public fun sendPacket(packet: Packet<ClientPlayPacketListener>): Unit = packetSender(packet)
 }
 
 public inline fun VirtualElement.onStartWatching(crossinline block: ElementStartWatchingScope.() -> Unit): Disposable {
@@ -323,8 +330,8 @@ public inline fun VirtualElement.onStartWatching(crossinline block: ElementStart
         `cornea$removeStartWatchingListener`(listener)
     }
 
-    listener = VirtualElementHook.StartWatchingListener { networkHandler ->
-        ElementStartWatchingScope(disposable, networkHandler).block()
+    listener = VirtualElementHook.StartWatchingListener { networkHandler, packetConsumer ->
+        ElementStartWatchingScope(disposable, networkHandler, packetConsumer::accept).block()
     }
 
     `cornea$addStartWatchingListener`(listener)
@@ -333,9 +340,14 @@ public inline fun VirtualElement.onStartWatching(crossinline block: ElementStart
 
 public class ElementStopWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val networkHandler: ServerPlayNetworkHandler
-) : Disposable by disposable {
+    public val networkHandler: ServerPlayNetworkHandler,
+    private val packetSender: (Packet<ClientPlayPacketListener>) -> Unit
+) :
+    Disposable by disposable
+{
     public val player: ServerPlayerEntity get() = networkHandler.player
+
+    public fun sendPacket(packet: Packet<ClientPlayPacketListener>): Unit = packetSender(packet)
 }
 
 public inline fun VirtualElement.onStopWatching(crossinline block: ElementStopWatchingScope.() -> Unit): Disposable {
@@ -346,8 +358,8 @@ public inline fun VirtualElement.onStopWatching(crossinline block: ElementStopWa
         `cornea$removeStopWatchingListener`(listener)
     }
 
-    listener = VirtualElementHook.StopWatchingListener { networkHandler ->
-        ElementStopWatchingScope(disposable, networkHandler).block()
+    listener = VirtualElementHook.StopWatchingListener { networkHandler, packetConsumer ->
+        ElementStopWatchingScope(disposable, networkHandler, packetConsumer::accept).block()
     }
 
     `cornea$addStopWatchingListener`(listener)

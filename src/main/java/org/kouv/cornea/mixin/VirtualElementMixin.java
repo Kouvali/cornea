@@ -123,7 +123,7 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     )
     private void cornea$invokeStartWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer, CallbackInfo ci) {
         for (StartWatchingListener listener : cornea$startWatchingListeners) {
-            listener.onStartWatching(player.networkHandler);
+            listener.onStartWatching(player.networkHandler, packetConsumer);
         }
     }
 
@@ -133,7 +133,7 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     )
     private void cornea$invokeStopWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer, CallbackInfo ci) {
         for (StopWatchingListener listener : cornea$stopWatchingListeners) {
-            listener.onStopWatching(player.networkHandler);
+            listener.onStopWatching(player.networkHandler, packetConsumer);
         }
     }
 

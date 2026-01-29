@@ -1,7 +1,11 @@
 package org.kouv.cornea.elements;
 
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public interface VirtualElementHook {
@@ -35,12 +39,12 @@ public interface VirtualElementHook {
 
     @FunctionalInterface
     interface StartWatchingListener {
-        void onStartWatching(ServerPlayNetworkHandler networkHandler);
+        void onStartWatching(ServerPlayNetworkHandler networkHandler, Consumer<? super Packet<ClientPlayPacketListener>> packetConsumer);
     }
 
     @FunctionalInterface
     interface StopWatchingListener {
-        void onStopWatching(ServerPlayNetworkHandler networkHandler);
+        void onStopWatching(ServerPlayNetworkHandler networkHandler, Consumer<? super Packet<ClientPlayPacketListener>> packetConsumer);
     }
 
     @FunctionalInterface
