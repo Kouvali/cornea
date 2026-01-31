@@ -133,12 +133,15 @@ public var VirtualElement.markedForRemoval: Boolean
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
-public val DisplayElement.transformation: Matrix4fc
+public var DisplayElement.transformation: Matrix4fc
     get() {
         return matrix4f {
             translationRotateScale(translation, leftRotation, scale)
             rotate(rightRotation)
         }
+    }
+    set(value) {
+        setTransformation(matrix4f(value))
     }
 
 public inline fun DisplayElement.transformation(block: Matrix4f.() -> Unit = {}): Matrix4f =
