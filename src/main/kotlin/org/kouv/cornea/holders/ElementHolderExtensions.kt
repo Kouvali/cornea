@@ -380,6 +380,18 @@ public inline fun ElementHolder.onTick(crossinline block: HolderTickScope.() -> 
 }
 
 @Deprecated(
+    "Use org.kouv.cornea.elements.attributes instead",
+    level = DeprecationLevel.ERROR
+)
+public val VirtualElement.attributes: Attributes get() = error("Do not call")
+
+@Deprecated(
+    "Use org.kouv.cornea.elements.addAsPassengerTo instead",
+    level = DeprecationLevel.ERROR
+)
+public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit = error("Do not call")
+
+@Deprecated(
     "Use org.kouv.cornea.elements.onStartWatching instead",
     level = DeprecationLevel.ERROR
 )
