@@ -26,3 +26,11 @@ public class Attributes internal constructor() {
         map.remove(key)
     }
 }
+
+public fun <T : Any> Attributes.getOrElse(key: AttributeKey<T>, defaultValue: () -> T): T {
+    return get(key) ?: defaultValue()
+}
+
+public fun <T : Any> Attributes.getOrPut(key: AttributeKey<T>, defaultValue: () -> T): T {
+    return get(key) ?: defaultValue().also { value -> set(key, value) }
+}
