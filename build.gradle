@@ -3,6 +3,7 @@ plugins {
     id 'fabric-loom'
     id 'maven-publish'
     id 'org.jreleaser'
+    id 'com.modrinth.minotaur'
 }
 
 sourceSets {
@@ -119,5 +120,14 @@ jreleaser {
                 }
             }
         }
+    }
+}
+
+modrinth {
+    projectId = 'tome-mod'
+    gameVersions = [minecraft_version]
+
+    dependencies {
+        required.version('polymer-virtual-entity', polymer_version)
     }
 }
