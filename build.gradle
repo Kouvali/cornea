@@ -125,6 +125,10 @@ jreleaser {
 
 modrinth {
     projectId = 'cornea'
+
+    versionNumber = "$version"
+    versionName = "v$version"
+
     gameVersions = [minecraft_version]
     uploadFile = remapJar
 
