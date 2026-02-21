@@ -126,6 +126,7 @@ jreleaser {
 modrinth {
     projectId = 'cornea'
     gameVersions = [minecraft_version]
+    uploadFile = remapJar
 
     dependencies {
         required.version('polymer-virtual-entity', polymer_version)
