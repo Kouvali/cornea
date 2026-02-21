@@ -129,6 +129,6 @@ modrinth {
     uploadFile = remapJar
 
     dependencies {
-        required.version('polymer-virtual-entity', polymer_version)
+        required.version('polymer', polymer_version)
     }
 }
