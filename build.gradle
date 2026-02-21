@@ -124,7 +124,7 @@ jreleaser {
 }
 
 modrinth {
-    projectId = 'tome-mod'
+    projectId = 'cornea'
     gameVersions = [minecraft_version]
 
     dependencies {
