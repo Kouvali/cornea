@@ -5,6 +5,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.data.Attributes;
 import org.kouv.cornea.elements.VirtualElementHook;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,13 +28,13 @@ import java.util.function.Consumer;
 )
 public abstract class VirtualElementMixin implements VirtualElement, VirtualElementHook {
     @Unique
-    private final Attributes cornea$attributes = new Attributes();
+    private @Nullable Attributes cornea$attributes = null;
     @Unique
-    private final List<StartWatchingListener> cornea$startWatchingListeners = new CopyOnWriteArrayList<>();
+    private @Nullable List<StartWatchingListener> cornea$startWatchingListeners = null;
     @Unique
-    private final List<StopWatchingListener> cornea$stopWatchingListeners = new CopyOnWriteArrayList<>();
+    private @Nullable List<StopWatchingListener> cornea$stopWatchingListeners = null;
     @Unique
-    private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
+    private @Nullable List<TickListener> cornea$tickListeners = null;
     @Unique
     private boolean cornea$markedForRemoval = false;
     @Unique
@@ -45,43 +46,65 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
 
     @Override
     public Attributes cornea$getAttributes() {
+        if (cornea$attributes == null) {
+            cornea$attributes = new Attributes();
+        }
+
         return cornea$attributes;
     }
 
     @Override
     public void cornea$addStartWatchingListener(StartWatchingListener listener) {
         Objects.requireNonNull(listener);
+        if (cornea$startWatchingListeners == null) {
+            cornea$startWatchingListeners = new CopyOnWriteArrayList<>();
+        }
+
         cornea$startWatchingListeners.add(listener);
     }
 
     @Override
     public void cornea$removeStartWatchingListener(StartWatchingListener listener) {
         Objects.requireNonNull(listener);
-        cornea$startWatchingListeners.remove(listener);
+        if (cornea$startWatchingListeners != null) {
+            cornea$startWatchingListeners.remove(listener);
+        }
     }
 
     @Override
     public void cornea$addStopWatchingListener(StopWatchingListener listener) {
         Objects.requireNonNull(listener);
+        if (cornea$stopWatchingListeners == null) {
+            cornea$stopWatchingListeners = new CopyOnWriteArrayList<>();
+        }
+
         cornea$stopWatchingListeners.add(listener);
     }
 
     @Override
     public void cornea$removeStopWatchingListener(StopWatchingListener listener) {
         Objects.requireNonNull(listener);
-        cornea$stopWatchingListeners.remove(listener);
+        if (cornea$stopWatchingListeners != null) {
+            cornea$stopWatchingListeners.remove(listener);
+        }
     }
 
     @Override
     public void cornea$addTickListener(TickListener listener) {
         Objects.requireNonNull(listener);
+        if (cornea$tickListeners == null) {
+            cornea$tickListeners = new CopyOnWriteArrayList<>();
+        }
+
         cornea$tickListeners.add(listener);
     }
 
     @Override
     public void cornea$removeTickListener(TickListener listener) {
         Objects.requireNonNull(listener);
-        cornea$tickListeners.remove(listener);
+        if (cornea$tickListeners != null) {
+            cornea$tickListeners.remove(listener);
+        }
     }
 
     @Override
@@ -130,8 +153,10 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
             at = @At(value = "TAIL")
     )
     private void cornea$invokeStartWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer, CallbackInfo ci) {
-        for (StartWatchingListener listener : cornea$startWatchingListeners) {
-            listener.onStartWatching(player.networkHandler, packetConsumer);
+        if (cornea$startWatchingListeners != null) {
+            for (StartWatchingListener listener : cornea$startWatchingListeners) {
+                listener.onStartWatching(player.networkHandler, packetConsumer);
+            }
         }
     }
 
@@ -140,8 +165,10 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
             at = @At(value = "TAIL")
     )
     private void cornea$invokeStopWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer, CallbackInfo ci) {
-        for (StopWatchingListener listener : cornea$stopWatchingListeners) {
-            listener.onStopWatching(player.networkHandler, packetConsumer);
+        if (cornea$stopWatchingListeners != null) {
+            for (StopWatchingListener listener : cornea$stopWatchingListeners) {
+                listener.onStopWatching(player.networkHandler, packetConsumer);
+            }
         }
     }
 
@@ -150,8 +177,10 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
             at = @At(value = "TAIL")
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
-        for (TickListener listener : cornea$tickListeners) {
-            listener.onTick();
+        if (cornea$tickListeners != null) {
+            for (TickListener listener : cornea$tickListeners) {
+                listener.onTick();
+            }
         }
     }
 

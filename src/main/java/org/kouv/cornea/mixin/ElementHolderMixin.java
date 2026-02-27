@@ -21,15 +21,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Mixin(value = ElementHolder.class, remap = false)
 public abstract class ElementHolderMixin implements ElementHolderHook {
     @Unique
-    private final Attributes cornea$attributes = new Attributes();
+    private @Nullable Attributes cornea$attributes = null;
     @Unique
-    private final List<StartWatchingListener> cornea$startWatchingListeners = new CopyOnWriteArrayList<>();
+    private @Nullable List<StartWatchingListener> cornea$startWatchingListeners = null;
     @Unique
-    private final List<StopWatchingListener> cornea$stopWatchingListeners = new CopyOnWriteArrayList<>();
+    private @Nullable List<StopWatchingListener> cornea$stopWatchingListeners = null;
     @Unique
-    private final List<AttachmentChangeListener> cornea$attachmentChangeListeners = new CopyOnWriteArrayList<>();
+    private @Nullable List<AttachmentChangeListener> cornea$attachmentChangeListeners = null;
     @Unique
-    private final List<TickListener> cornea$tickListeners = new CopyOnWriteArrayList<>();
+    private @Nullable List<TickListener> cornea$tickListeners = null;
     @Unique
     private boolean cornea$markedForDestruction = false;
 
@@ -38,55 +38,83 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
 
     @Override
     public Attributes cornea$getAttributes() {
+        if (cornea$attributes == null) {
+            cornea$attributes = new Attributes();
+        }
+
         return cornea$attributes;
     }
 
     @Override
     public void cornea$addStartWatchingListener(StartWatchingListener listener) {
         Objects.requireNonNull(listener);
+        if (cornea$startWatchingListeners == null) {
+            cornea$startWatchingListeners = new CopyOnWriteArrayList<>();
+        }
+
         cornea$startWatchingListeners.add(listener);
     }
 
     @Override
     public void cornea$removeStartWatchingListener(StartWatchingListener listener) {
         Objects.requireNonNull(listener);
-        cornea$startWatchingListeners.remove(listener);
+        if (cornea$startWatchingListeners != null) {
+            cornea$startWatchingListeners.remove(listener);
+        }
     }
 
     @Override
     public void cornea$addStopWatchingListener(StopWatchingListener listener) {
         Objects.requireNonNull(listener);
+        if (cornea$stopWatchingListeners == null) {
+            cornea$stopWatchingListeners = new CopyOnWriteArrayList<>();
+        }
+
         cornea$stopWatchingListeners.add(listener);
     }
 
     @Override
     public void cornea$removeStopWatchingListener(StopWatchingListener listener) {
         Objects.requireNonNull(listener);
-        cornea$stopWatchingListeners.remove(listener);
+        if (cornea$stopWatchingListeners != null) {
+            cornea$stopWatchingListeners.remove(listener);
+        }
     }
 
     @Override
     public void cornea$addAttachmentChangeListener(AttachmentChangeListener listener) {
         Objects.requireNonNull(listener);
+        if (cornea$attachmentChangeListeners == null) {
+            cornea$attachmentChangeListeners = new CopyOnWriteArrayList<>();
+        }
+
         cornea$attachmentChangeListeners.add(listener);
     }
 
     @Override
     public void cornea$removeAttachmentChangeListener(AttachmentChangeListener listener) {
         Objects.requireNonNull(listener);
-        cornea$attachmentChangeListeners.remove(listener);
+        if (cornea$attachmentChangeListeners != null) {
+            cornea$attachmentChangeListeners.remove(listener);
+        }
     }
 
     @Override
     public void cornea$addTickListener(TickListener listener) {
         Objects.requireNonNull(listener);
+        if (cornea$tickListeners == null) {
+            cornea$tickListeners = new CopyOnWriteArrayList<>();
+        }
+
         cornea$tickListeners.add(listener);
     }
 
     @Override
     public void cornea$removeTickListener(TickListener listener) {
         Objects.requireNonNull(listener);
-        cornea$tickListeners.remove(listener);
+        if (cornea$tickListeners != null) {
+            cornea$tickListeners.remove(listener);
+        }
     }
 
     @Override
@@ -108,8 +136,10 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (StartWatchingListener listener : cornea$startWatchingListeners) {
-            listener.onStartWatching(networkHandler);
+        if (cornea$startWatchingListeners != null) {
+            for (StartWatchingListener listener : cornea$startWatchingListeners) {
+                listener.onStartWatching(networkHandler);
+            }
         }
     }
 
@@ -122,8 +152,10 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             return;
         }
 
-        for (StopWatchingListener listener : cornea$stopWatchingListeners) {
-            listener.onStopWatching(networkHandler);
+        if (cornea$stopWatchingListeners != null) {
+            for (StopWatchingListener listener : cornea$stopWatchingListeners) {
+                listener.onStopWatching(networkHandler);
+            }
         }
     }
 
@@ -132,8 +164,10 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             at = @At(value = "TAIL")
     )
     private void cornea$invokeAttachmentChangeListenersOnSet(HolderAttachment attachment, @Nullable HolderAttachment oldAttachment, CallbackInfo ci) {
-        for (AttachmentChangeListener listener : cornea$attachmentChangeListeners) {
-            listener.onAttachmentChange(oldAttachment, attachment);
+        if (cornea$attachmentChangeListeners != null) {
+            for (AttachmentChangeListener listener : cornea$attachmentChangeListeners) {
+                listener.onAttachmentChange(oldAttachment, attachment);
+            }
         }
     }
 
@@ -142,8 +176,10 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             at = @At(value = "TAIL")
     )
     private void cornea$invokeAttachmentChangeListenersOnRemove(HolderAttachment oldAttachment, CallbackInfo ci) {
-        for (AttachmentChangeListener listener : cornea$attachmentChangeListeners) {
-            listener.onAttachmentChange(oldAttachment, null);
+        if (cornea$attachmentChangeListeners != null) {
+            for (AttachmentChangeListener listener : cornea$attachmentChangeListeners) {
+                listener.onAttachmentChange(oldAttachment, null);
+            }
         }
     }
 
@@ -156,8 +192,10 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             )
     )
     private void cornea$invokeTickListeners(CallbackInfo ci) {
-        for (TickListener listener : cornea$tickListeners) {
-            listener.onTick();
+        if (cornea$tickListeners != null) {
+            for (TickListener listener : cornea$tickListeners) {
+                listener.onTick();
+            }
         }
     }
 
