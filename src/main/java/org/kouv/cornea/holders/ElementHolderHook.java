@@ -25,9 +25,9 @@ public interface ElementHolderHook {
 
     void cornea$removeTickListener(TickListener listener);
 
-    boolean cornea$isMarkedForDestruction();
+    int cornea$getDestructionDelay();
 
-    void cornea$setMarkedForDestruction(boolean marked);
+    void cornea$setDestructionDelay(int destructionDelay);
 
     @FunctionalInterface
     interface StartWatchingListener {

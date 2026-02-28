@@ -122,12 +122,12 @@ public var VirtualElement.velocity: Vec3d
         (this as VirtualElementHook).`cornea$setVelocity`(value)
     }
 
-public var VirtualElement.markedForRemoval: Boolean
+public var VirtualElement.removalDelay: Int
     get() {
-        return (this as VirtualElementHook).`cornea$isMarkedForRemoval`()
+        return (this as VirtualElementHook).`cornea$getRemovalDelay`()
     }
     set(value) {
-        (this as VirtualElementHook).`cornea$setMarkedForRemoval`(value)
+        (this as VirtualElementHook).`cornea$setRemovalDelay`(value)
     }
 
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =

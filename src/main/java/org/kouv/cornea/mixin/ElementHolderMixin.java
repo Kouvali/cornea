@@ -31,7 +31,7 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     @Unique
     private @Nullable List<TickListener> cornea$tickListeners = null;
     @Unique
-    private boolean cornea$markedForDestruction = false;
+    private int cornea$destructionDelay = -1;
 
     @Shadow
     public abstract void destroy();
@@ -118,13 +118,13 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Override
-    public boolean cornea$isMarkedForDestruction() {
-        return cornea$markedForDestruction;
+    public int cornea$getDestructionDelay() {
+        return cornea$destructionDelay;
     }
 
     @Override
-    public void cornea$setMarkedForDestruction(boolean marked) {
-        cornea$markedForDestruction = marked;
+    public void cornea$setDestructionDelay(int destructionDelay) {
+        cornea$destructionDelay = destructionDelay;
     }
 
     @Inject(
@@ -205,9 +205,13 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
             cancellable = true
     )
     private void cornea$processPendingDestruction(CallbackInfo ci) {
-        if (cornea$markedForDestruction) {
-            ci.cancel();
-            destroy();
+        if (cornea$destructionDelay >= 0) {
+            if (cornea$destructionDelay == 0) {
+                ci.cancel();
+                destroy();
+            }
+
+            cornea$destructionDelay--;
         }
     }
 }

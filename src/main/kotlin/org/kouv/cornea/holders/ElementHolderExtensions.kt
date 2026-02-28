@@ -270,12 +270,12 @@ public val ElementHolder.attributes: Attributes
         return (this as ElementHolderHook).`cornea$getAttributes`()
     }
 
-public var ElementHolder.markedForDestruction: Boolean
+public var ElementHolder.destructionDelay: Int
     get() {
-        return (this as ElementHolderHook).`cornea$isMarkedForDestruction`()
+        return (this as ElementHolderHook).`cornea$getDestructionDelay`()
     }
     set(value) {
-        (this as ElementHolderHook).`cornea$setMarkedForDestruction`(value)
+        (this as ElementHolderHook).`cornea$setDestructionDelay`(value)
     }
 
 public fun ElementHolder.addAsPassengerTo(entity: Entity): Unit =

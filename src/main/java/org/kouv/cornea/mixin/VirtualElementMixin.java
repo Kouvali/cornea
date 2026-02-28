@@ -36,7 +36,7 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     @Unique
     private @Nullable List<TickListener> cornea$tickListeners = null;
     @Unique
-    private boolean cornea$markedForRemoval = false;
+    private int cornea$removalDelay = -1;
     @Unique
     private double cornea$drag = 1.0;
     @Unique
@@ -108,13 +108,13 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     }
 
     @Override
-    public boolean cornea$isMarkedForRemoval() {
-        return cornea$markedForRemoval;
+    public int cornea$getRemovalDelay() {
+        return cornea$removalDelay;
     }
 
     @Override
-    public void cornea$setMarkedForRemoval(boolean marked) {
-        cornea$markedForRemoval = marked;
+    public void cornea$setRemovalDelay(int removalDelay) {
+        cornea$removalDelay = removalDelay;
     }
 
     @Override
@@ -190,11 +190,15 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
             cancellable = true
     )
     private void cornea$processPendingRemoval(CallbackInfo ci) {
-        if (cornea$markedForRemoval) {
-            ci.cancel();
-            if (getHolder() != null) {
-                getHolder().removeElement(this);
+        if (cornea$removalDelay >= 0) {
+            if (cornea$removalDelay == 0) {
+                ci.cancel();
+                if (getHolder() != null) {
+                    getHolder().removeElement(this);
+                }
             }
+
+            cornea$removalDelay--;
         }
     }
 
