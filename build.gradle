@@ -125,6 +125,7 @@ modrinth {
     versionName = "v$version"
 
     gameVersions = [minecraft_version]
+    uploadFile = jar
 
     dependencies {
         required.version('polymer', polymer_version)
