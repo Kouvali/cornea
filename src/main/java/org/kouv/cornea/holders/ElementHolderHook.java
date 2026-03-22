@@ -1,7 +1,7 @@
 package org.kouv.cornea.holders;
 
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.data.Attributes;
 
@@ -31,12 +31,12 @@ public interface ElementHolderHook {
 
     @FunctionalInterface
     interface StartWatchingListener {
-        void onStartWatching(ServerPlayNetworkHandler networkHandler);
+        void onStartWatching(ServerGamePacketListenerImpl connection);
     }
 
     @FunctionalInterface
     interface StopWatchingListener {
-        void onStopWatching(ServerPlayNetworkHandler networkHandler);
+        void onStopWatching(ServerGamePacketListenerImpl connection);
     }
 
     @FunctionalInterface

@@ -4,19 +4,19 @@ import eu.pb4.polymer.virtualentity.api.ElementHolder
 import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils
 import eu.pb4.polymer.virtualentity.api.attachment.*
 import eu.pb4.polymer.virtualentity.api.elements.*
-import net.minecraft.block.BlockState
-import net.minecraft.entity.Entity
-import net.minecraft.entity.EntityType
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
-import net.minecraft.server.network.ServerPlayNetworkHandler
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.Text
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
-import net.minecraft.world.chunk.WorldChunk
+import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Component
+import net.minecraft.resources.Identifier
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.network.ServerGamePacketListenerImpl
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.chunk.LevelChunk
+import net.minecraft.world.phys.Vec3
 import org.kouv.cornea.annotations.ExperimentalPolymerApi
 import org.kouv.cornea.annotations.InternalPolymerApi
 import org.kouv.cornea.data.Attributes
@@ -76,10 +76,10 @@ public inline fun <reified T : VirtualElement> ElementHolder.eachElement(block: 
 
 @InternalPolymerApi
 public inline fun ElementHolder.blockBoundAttachment(
-    chunk: WorldChunk,
+    chunk: LevelChunk,
     state: BlockState,
     blockPos: BlockPos,
-    pos: Vec3d,
+    pos: Vec3,
     isTicking: Boolean,
     block: BlockBoundAttachment.() -> Unit = {}
 ): BlockBoundAttachment =
@@ -87,7 +87,7 @@ public inline fun ElementHolder.blockBoundAttachment(
 
 @ExperimentalPolymerApi
 public inline fun ElementHolder.blockBoundAttachmentOf(
-    world: ServerWorld,
+    world: ServerLevel,
     blockPos: BlockPos,
     state: BlockState,
     block: BlockBoundAttachment.() -> Unit = {}
@@ -95,8 +95,8 @@ public inline fun ElementHolder.blockBoundAttachmentOf(
 
 @ExperimentalPolymerApi
 public inline fun ElementHolder.blockBoundAttachmentOf(
-    world: ServerWorld,
-    chunk: WorldChunk,
+    world: ServerLevel,
+    chunk: LevelChunk,
     blockPos: BlockPos,
     state: BlockState,
     block: BlockBoundAttachment.() -> Unit = {}
@@ -105,40 +105,40 @@ public inline fun ElementHolder.blockBoundAttachmentOf(
 
 @ExperimentalPolymerApi
 public inline fun ElementHolder.blockBoundAttachmentFromMoving(
-    world: ServerWorld,
+    world: ServerLevel,
     pos: BlockPos,
     state: BlockState,
     block: BlockBoundAttachment.() -> Unit = {}
 ): BlockBoundAttachment? = org.kouv.cornea.attachments.blockBoundAttachmentFromMoving(this, world, pos, state, block)
 
 public inline fun ElementHolder.chunkAttachment(
-    chunk: WorldChunk,
-    pos: Vec3d,
+    chunk: LevelChunk,
+    pos: Vec3,
     isTicking: Boolean,
     block: ChunkAttachment.() -> Unit = {}
 ): ChunkAttachment = org.kouv.cornea.attachments.chunkAttachment(this, chunk, pos, isTicking, block)
 
 public inline fun ElementHolder.chunkAttachmentOf(
-    world: ServerWorld,
+    world: ServerLevel,
     pos: BlockPos,
     block: HolderAttachment.() -> Unit = {}
 ): HolderAttachment = org.kouv.cornea.attachments.chunkAttachmentOf(this, world, pos, block)
 
 public inline fun ElementHolder.chunkAttachmentOfTicking(
-    world: ServerWorld,
+    world: ServerLevel,
     pos: BlockPos,
     block: HolderAttachment.() -> Unit = {}
 ): HolderAttachment = org.kouv.cornea.attachments.chunkAttachmentOfTicking(this, world, pos, block)
 
 public inline fun ElementHolder.chunkAttachmentOf(
-    world: ServerWorld,
-    pos: Vec3d,
+    world: ServerLevel,
+    pos: Vec3,
     block: HolderAttachment.() -> Unit = {}
 ): HolderAttachment = org.kouv.cornea.attachments.chunkAttachmentOf(this, world, pos, block)
 
 public inline fun ElementHolder.chunkAttachmentOfTicking(
-    world: ServerWorld,
-    pos: Vec3d,
+    world: ServerLevel,
+    pos: Vec3,
     block: HolderAttachment.() -> Unit = {}
 ): HolderAttachment = org.kouv.cornea.attachments.chunkAttachmentOfTicking(this, world, pos, block)
 
@@ -181,8 +181,8 @@ public inline fun ElementHolder.identifiedUniqueEntityAttachmentOfTicking(
     org.kouv.cornea.attachments.identifiedUniqueEntityAttachmentOfTicking(id, this, entity, block)
 
 public inline fun ElementHolder.manualAttachment(
-    world: ServerWorld,
-    noinline posSupplier: () -> Vec3d,
+    world: ServerLevel,
+    noinline posSupplier: () -> Vec3,
     block: ManualAttachment.() -> Unit = {}
 ): ManualAttachment = org.kouv.cornea.attachments.manualAttachment(this, world, posSupplier, block)
 
@@ -196,26 +196,26 @@ public inline fun ElementHolder.blockDisplayElement(
 
 public inline fun <T : Entity> ElementHolder.entityElement(
     entity: T,
-    world: ServerWorld,
+    world: ServerLevel,
     block: EntityElement<T>.() -> Unit = {}
 ): EntityElement<T> = addElement(org.kouv.cornea.elements.entityElement(entity, world, block))
 
 public inline fun <T : Entity> ElementHolder.entityElement(
     entity: T,
-    world: ServerWorld,
+    world: ServerLevel,
     handler: VirtualElement.InteractionHandler,
     block: EntityElement<T>.() -> Unit = {}
 ): EntityElement<T> = addElement(org.kouv.cornea.elements.entityElement(entity, world, handler, block))
 
 public inline fun <T : Entity> ElementHolder.entityElement(
     type: EntityType<T>,
-    world: ServerWorld,
+    world: ServerLevel,
     block: EntityElement<T>.() -> Unit = {}
 ): EntityElement<T> = addElement(org.kouv.cornea.elements.entityElement(type, world, block))
 
 public inline fun <T : Entity> ElementHolder.entityElement(
     type: EntityType<T>,
-    world: ServerWorld,
+    world: ServerLevel,
     handler: VirtualElement.InteractionHandler,
     block: EntityElement<T>.() -> Unit = {}
 ): EntityElement<T> = addElement(org.kouv.cornea.elements.entityElement(type, world, handler, block))
@@ -261,7 +261,7 @@ public inline fun ElementHolder.textDisplayElement(block: TextDisplayElement.() 
     addElement(org.kouv.cornea.elements.textDisplayElement(block))
 
 public inline fun ElementHolder.textDisplayElement(
-    text: Text,
+    text: Component,
     block: TextDisplayElement.() -> Unit = {}
 ): TextDisplayElement = addElement(org.kouv.cornea.elements.textDisplayElement(text, block))
 
@@ -283,9 +283,11 @@ public fun ElementHolder.addAsPassengerTo(entity: Entity): Unit =
 
 public class HolderStartWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val networkHandler: ServerPlayNetworkHandler
-) : Disposable by disposable {
-    public val player: ServerPlayerEntity get() = networkHandler.player
+    public val networkHandler: ServerGamePacketListenerImpl
+) :
+    Disposable by disposable
+{
+    public val player: ServerPlayer get() = networkHandler.player
 }
 
 public inline fun ElementHolder.onStartWatching(crossinline block: HolderStartWatchingScope.() -> Unit): Disposable {
@@ -306,9 +308,11 @@ public inline fun ElementHolder.onStartWatching(crossinline block: HolderStartWa
 
 public class HolderStopWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val networkHandler: ServerPlayNetworkHandler
-) : Disposable by disposable {
-    public val player: ServerPlayerEntity get() = networkHandler.player
+    public val networkHandler: ServerGamePacketListenerImpl
+) :
+    Disposable by disposable
+{
+    public val player: ServerPlayer get() = networkHandler.player
 }
 
 public inline fun ElementHolder.onStopWatching(crossinline block: HolderStopWatchingScope.() -> Unit): Disposable {
@@ -331,7 +335,8 @@ public class HolderAttachmentChangeScope @PublishedApi internal constructor(
     disposable: Disposable,
     public val oldAttachment: HolderAttachment?,
     public val newAttachment: HolderAttachment?
-) : Disposable by disposable
+) :
+    Disposable by disposable
 
 public inline fun ElementHolder.onAttachmentChange(crossinline block: HolderAttachmentChangeScope.() -> Unit): Disposable {
     this as ElementHolderHook

@@ -1,10 +1,10 @@
 package org.kouv.cornea.mixin;
 
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.data.Attributes;
 import org.kouv.cornea.elements.VirtualElementHook;
@@ -23,8 +23,7 @@ import java.util.function.Consumer;
         targets = {
                 "eu.pb4.polymer.virtualentity.api.elements.EntityElement",
                 "eu.pb4.polymer.virtualentity.api.elements.GenericEntityElement"
-        },
-        remap = false
+        }
 )
 public abstract class VirtualElementMixin implements VirtualElement, VirtualElementHook {
     @Unique
@@ -42,7 +41,7 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     @Unique
     private double cornea$gravity = 0.0;
     @Unique
-    private Vec3d cornea$velocity = Vec3d.ZERO;
+    private Vec3 cornea$velocity = Vec3.ZERO;
 
     @Override
     public Attributes cornea$getAttributes() {
@@ -138,12 +137,12 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     }
 
     @Override
-    public Vec3d cornea$getVelocity() {
+    public Vec3 cornea$getVelocity() {
         return cornea$velocity;
     }
 
     @Override
-    public void cornea$setVelocity(Vec3d velocity) {
+    public void cornea$setVelocity(Vec3 velocity) {
         Objects.requireNonNull(velocity);
         cornea$velocity = velocity;
     }
@@ -152,10 +151,10 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
             method = "startWatching",
             at = @At(value = "TAIL")
     )
-    private void cornea$invokeStartWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer, CallbackInfo ci) {
+    private void cornea$invokeStartWatchingListeners(ServerPlayer player, Consumer<Packet<ClientGamePacketListener>> packetConsumer, CallbackInfo ci) {
         if (cornea$startWatchingListeners != null) {
             for (StartWatchingListener listener : cornea$startWatchingListeners) {
-                listener.onStartWatching(player.networkHandler, packetConsumer);
+                listener.onStartWatching(player.connection, packetConsumer);
             }
         }
     }
@@ -164,10 +163,10 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
             method = "stopWatching",
             at = @At(value = "TAIL")
     )
-    private void cornea$invokeStopWatchingListeners(ServerPlayerEntity player, Consumer<Packet<ClientPlayPacketListener>> packetConsumer, CallbackInfo ci) {
+    private void cornea$invokeStopWatchingListeners(ServerPlayer player, Consumer<Packet<ClientGamePacketListener>> packetConsumer, CallbackInfo ci) {
         if (cornea$stopWatchingListeners != null) {
             for (StopWatchingListener listener : cornea$stopWatchingListeners) {
-                listener.onStopWatching(player.networkHandler, packetConsumer);
+                listener.onStopWatching(player.connection, packetConsumer);
             }
         }
     }
@@ -208,14 +207,14 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     )
     private void cornea$tickPhysics(CallbackInfo ci) {
         if (Math.abs(cornea$drag - 1.0) > 1.0E-6) {
-            cornea$velocity = cornea$velocity.multiply(cornea$drag);
+            cornea$velocity = cornea$velocity.scale(cornea$drag);
         }
 
         if (Math.abs(cornea$gravity) > 1.0E-6) {
             cornea$velocity = cornea$velocity.subtract(0, cornea$gravity, 0);
         }
 
-        if (cornea$velocity.lengthSquared() > 1E-6) {
+        if (cornea$velocity.lengthSqr() > 1E-6) {
             setOffset(getOffset().add(cornea$velocity));
         }
     }

@@ -2,7 +2,7 @@ package org.kouv.cornea.mixin;
 
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.jetbrains.annotations.Nullable;
 import org.kouv.cornea.data.Attributes;
 import org.kouv.cornea.holders.ElementHolderHook;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Mixin(value = ElementHolder.class, remap = false)
+@Mixin(value = ElementHolder.class)
 public abstract class ElementHolderMixin implements ElementHolderHook {
     @Unique
     private @Nullable Attributes cornea$attributes = null;
@@ -128,33 +128,33 @@ public abstract class ElementHolderMixin implements ElementHolderHook {
     }
 
     @Inject(
-            method = "startWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
+            method = "startWatching(Lnet/minecraft/server/network/ServerGamePacketListenerImpl;)Z",
             at = @At(value = "RETURN")
     )
-    private void cornea$invokeStartWatchingListeners(ServerPlayNetworkHandler networkHandler, CallbackInfoReturnable<Boolean> cir) {
+    private void cornea$invokeStartWatchingListeners(ServerGamePacketListenerImpl connection, CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValueZ()) {
             return;
         }
 
         if (cornea$startWatchingListeners != null) {
             for (StartWatchingListener listener : cornea$startWatchingListeners) {
-                listener.onStartWatching(networkHandler);
+                listener.onStartWatching(connection);
             }
         }
     }
 
     @Inject(
-            method = "stopWatching(Lnet/minecraft/server/network/ServerPlayNetworkHandler;)Z",
+            method = "stopWatching(Lnet/minecraft/server/network/ServerGamePacketListenerImpl;)Z",
             at = @At(value = "RETURN")
     )
-    private void cornea$invokeStopWatchingListeners(ServerPlayNetworkHandler networkHandler, CallbackInfoReturnable<Boolean> cir) {
+    private void cornea$invokeStopWatchingListeners(ServerGamePacketListenerImpl connection, CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValueZ()) {
             return;
         }
 
         if (cornea$stopWatchingListeners != null) {
             for (StopWatchingListener listener : cornea$stopWatchingListeners) {
-                listener.onStopWatching(networkHandler);
+                listener.onStopWatching(connection);
             }
         }
     }

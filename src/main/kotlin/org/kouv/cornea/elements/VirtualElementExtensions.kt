@@ -2,18 +2,18 @@ package org.kouv.cornea.elements
 
 import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils
 import eu.pb4.polymer.virtualentity.api.elements.*
-import net.minecraft.block.BlockState
-import net.minecraft.entity.Entity
-import net.minecraft.entity.EntityType
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
-import net.minecraft.network.listener.ClientPlayPacketListener
-import net.minecraft.network.packet.Packet
-import net.minecraft.server.network.ServerPlayNetworkHandler
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.Text
-import net.minecraft.util.math.Vec3d
+import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientGamePacketListener
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.network.ServerGamePacketListenerImpl
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.Vec3
 import org.joml.*
 import org.kouv.cornea.data.Attributes
 import org.kouv.cornea.events.Disposable
@@ -31,26 +31,26 @@ public inline fun blockDisplayElement(
 
 public inline fun <T : Entity> entityElement(
     entity: T,
-    world: ServerWorld,
+    world: ServerLevel,
     block: EntityElement<T>.() -> Unit = {}
 ): EntityElement<T> = EntityElement(entity, world).apply(block)
 
 public inline fun <T : Entity> entityElement(
     entity: T,
-    world: ServerWorld,
+    world: ServerLevel,
     handler: VirtualElement.InteractionHandler,
     block: EntityElement<T>.() -> Unit = {}
 ): EntityElement<T> = EntityElement(entity, world, handler).apply(block)
 
 public inline fun <T : Entity> entityElement(
     type: EntityType<T>,
-    world: ServerWorld,
+    world: ServerLevel,
     block: EntityElement<T>.() -> Unit = {}
 ): EntityElement<T> = EntityElement(type, world).apply(block)
 
 public inline fun <T : Entity> entityElement(
     type: EntityType<T>,
-    world: ServerWorld,
+    world: ServerLevel,
     handler: VirtualElement.InteractionHandler,
     block: EntityElement<T>.() -> Unit = {}
 ): EntityElement<T> = EntityElement(type, world, handler).apply(block)
@@ -90,7 +90,7 @@ public inline fun simpleEntityElement(
 public inline fun textDisplayElement(block: TextDisplayElement.() -> Unit = {}): TextDisplayElement =
     TextDisplayElement().apply(block)
 
-public inline fun textDisplayElement(text: Text, block: TextDisplayElement.() -> Unit = {}): TextDisplayElement =
+public inline fun textDisplayElement(text: Component, block: TextDisplayElement.() -> Unit = {}): TextDisplayElement =
     TextDisplayElement(text).apply(block)
 
 public val VirtualElement.attributes: Attributes
@@ -114,7 +114,7 @@ public var VirtualElement.gravity: Double
         (this as VirtualElementHook).`cornea$setGravity`(value)
     }
 
-public var VirtualElement.velocity: Vec3d
+public var VirtualElement.velocity: Vec3
     get() {
         return (this as VirtualElementHook).`cornea$getVelocity`()
     }
@@ -321,14 +321,14 @@ public fun DisplayElement.startInterpolationIfDirty(duration: Int) {
 
 public class ElementStartWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val networkHandler: ServerPlayNetworkHandler,
-    private val packetSender: (Packet<ClientPlayPacketListener>) -> Unit
+    public val networkHandler: ServerGamePacketListenerImpl,
+    private val packetSender: (Packet<ClientGamePacketListener>) -> Unit
 ) :
     Disposable by disposable
 {
-    public val player: ServerPlayerEntity get() = networkHandler.player
+    public val player: ServerPlayer get() = networkHandler.player
 
-    public fun sendPacket(packet: Packet<ClientPlayPacketListener>): Unit = packetSender(packet)
+    public fun sendPacket(packet: Packet<ClientGamePacketListener>): Unit = packetSender(packet)
 }
 
 public inline fun VirtualElement.onStartWatching(crossinline block: ElementStartWatchingScope.() -> Unit): Disposable {
@@ -349,14 +349,14 @@ public inline fun VirtualElement.onStartWatching(crossinline block: ElementStart
 
 public class ElementStopWatchingScope @PublishedApi internal constructor(
     disposable: Disposable,
-    public val networkHandler: ServerPlayNetworkHandler,
-    private val packetSender: (Packet<ClientPlayPacketListener>) -> Unit
+    public val networkHandler: ServerGamePacketListenerImpl,
+    private val packetSender: (Packet<ClientGamePacketListener>) -> Unit
 ) :
     Disposable by disposable
 {
-    public val player: ServerPlayerEntity get() = networkHandler.player
+    public val player: ServerPlayer get() = networkHandler.player
 
-    public fun sendPacket(packet: Packet<ClientPlayPacketListener>): Unit = packetSender(packet)
+    public fun sendPacket(packet: Packet<ClientGamePacketListener>): Unit = packetSender(packet)
 }
 
 public inline fun VirtualElement.onStopWatching(crossinline block: ElementStopWatchingScope.() -> Unit): Disposable {

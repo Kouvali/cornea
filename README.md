@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    modImplementation("io.github.kouvali:cornea:YOUR_VERSION")
+    implementation("io.github.kouvali:cornea:YOUR_VERSION")
 }
 ```
 
@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    modImplementation "io.github.kouvali:cornea:YOUR_VERSION"
+    implementation "io.github.kouvali:cornea:YOUR_VERSION"
 }
 ```
 

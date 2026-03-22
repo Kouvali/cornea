@@ -3,7 +3,7 @@ package org.kouv.cornea.holders
 import eu.pb4.polymer.virtualentity.api.ElementHolder
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment
 import io.mockk.*
-import net.minecraft.server.network.ServerPlayNetworkHandler
+import net.minecraft.server.network.ServerGamePacketListenerImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kouv.cornea.tests.FabricExtension
@@ -23,7 +23,7 @@ class ElementHolderHookTest {
     @Test
     fun `startWatching should invoke startWatching listeners`() {
         // given
-        val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
+        val mockConnection = mockk<ServerGamePacketListenerImpl>(relaxed = true)
         val mockListener = mockk<ElementHolderHook.StartWatchingListener>()
 
         every { mockListener.onStartWatching(any()) } just runs
@@ -31,28 +31,28 @@ class ElementHolderHookTest {
         elementHolderHook.`cornea$addStartWatchingListener`(mockListener)
 
         // when
-        elementHolder.startWatching(mockNetworkHandler)
+        elementHolder.startWatching(mockConnection)
 
         // then
-        verify { mockListener.onStartWatching(mockNetworkHandler) }
+        verify { mockListener.onStartWatching(mockConnection) }
     }
 
     @Test
     fun `stopWatching should invoke stopWatching listeners`() {
         // given
-        val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
+        val mockConnection = mockk<ServerGamePacketListenerImpl>(relaxed = true)
         val mockListener = mockk<ElementHolderHook.StopWatchingListener>()
 
         every { mockListener.onStopWatching(any()) } just runs
 
-        elementHolder.startWatching(mockNetworkHandler)
+        elementHolder.startWatching(mockConnection)
         elementHolderHook.`cornea$addStopWatchingListener`(mockListener)
 
         // when
-        elementHolder.stopWatching(mockNetworkHandler)
+        elementHolder.stopWatching(mockConnection)
 
         // then
-        verify { mockListener.onStopWatching(mockNetworkHandler) }
+        verify { mockListener.onStopWatching(mockConnection) }
     }
 
     @Test

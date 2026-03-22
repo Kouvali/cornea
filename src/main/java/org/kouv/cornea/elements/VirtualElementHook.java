@@ -1,9 +1,9 @@
 package org.kouv.cornea.elements;
 
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.phys.Vec3;
 import org.kouv.cornea.data.Attributes;
 
 import java.util.function.Consumer;
@@ -36,18 +36,18 @@ public interface VirtualElementHook {
 
     void cornea$setGravity(double gravity);
 
-    Vec3d cornea$getVelocity();
+    Vec3 cornea$getVelocity();
 
-    void cornea$setVelocity(Vec3d velocity);
+    void cornea$setVelocity(Vec3 velocity);
 
     @FunctionalInterface
     interface StartWatchingListener {
-        void onStartWatching(ServerPlayNetworkHandler networkHandler, Consumer<? super Packet<ClientPlayPacketListener>> packetConsumer);
+        void onStartWatching(ServerGamePacketListenerImpl connection, Consumer<? super Packet<ClientGamePacketListener>> packetConsumer);
     }
 
     @FunctionalInterface
     interface StopWatchingListener {
-        void onStopWatching(ServerPlayNetworkHandler networkHandler, Consumer<? super Packet<ClientPlayPacketListener>> packetConsumer);
+        void onStopWatching(ServerGamePacketListenerImpl connection, Consumer<? super Packet<ClientGamePacketListener>> packetConsumer);
     }
 
     @FunctionalInterface

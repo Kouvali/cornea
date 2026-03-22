@@ -3,13 +3,9 @@ package org.kouv.cornea.elements
 import eu.pb4.polymer.virtualentity.api.ElementHolder
 import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.runs
-import io.mockk.verify
-import net.minecraft.server.network.ServerPlayNetworkHandler
-import net.minecraft.util.math.Vec3d
+import io.mockk.*
+import net.minecraft.server.network.ServerGamePacketListenerImpl
+import net.minecraft.world.phys.Vec3
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kouv.cornea.holders.elementHolder
@@ -35,7 +31,7 @@ class VirtualElementHookTest {
     @Test
     fun `startWatching should invoke startWatching listeners`() {
         // given
-        val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
+        val mockConnection = mockk<ServerGamePacketListenerImpl>(relaxed = true)
         val mockListener = mockk<VirtualElementHook.StartWatchingListener>()
 
         every { mockListener.onStartWatching(any(), any()) } just runs
@@ -43,7 +39,7 @@ class VirtualElementHookTest {
         virtualElementHook.`cornea$addStartWatchingListener`(mockListener)
 
         // when
-        elementHolder.startWatching(mockNetworkHandler)
+        elementHolder.startWatching(mockConnection)
 
         // then
         verify { mockListener.onStartWatching(any(), any()) }
@@ -52,16 +48,16 @@ class VirtualElementHookTest {
     @Test
     fun `stopWatching should invoke stopWatching listeners`() {
         // given
-        val mockNetworkHandler = mockk<ServerPlayNetworkHandler>(relaxed = true)
+        val mockConnection = mockk<ServerGamePacketListenerImpl>(relaxed = true)
         val mockListener = mockk<VirtualElementHook.StopWatchingListener>()
 
         every { mockListener.onStopWatching(any(), any()) } just runs
 
         virtualElementHook.`cornea$addStopWatchingListener`(mockListener)
-        elementHolder.startWatching(mockNetworkHandler)
+        elementHolder.startWatching(mockConnection)
 
         // when
-        elementHolder.stopWatching(mockNetworkHandler)
+        elementHolder.stopWatching(mockConnection)
 
         // then
         verify { mockListener.onStopWatching(any(), any()) }
@@ -109,7 +105,7 @@ class VirtualElementHookTest {
     fun `tick should apply drag to velocity when attachment is not null`() {
         // given
         val mockkAttachment = mockk<HolderAttachment>(relaxed = true)
-        val velocity = Vec3d(1.0, 2.0, 3.0)
+        val velocity = Vec3(1.0, 2.0, 3.0)
         val drag = 0.8
 
         elementHolder.attachment = mockkAttachment
@@ -120,14 +116,14 @@ class VirtualElementHookTest {
         elementHolder.tick()
 
         // then
-        assertEquals(velocity.multiply(drag), virtualElementHook.`cornea$getVelocity`())
+        assertEquals(velocity.scale(drag), virtualElementHook.`cornea$getVelocity`())
     }
 
     @Test
     fun `tick should apply gravity to offset when attachment is not null`() {
         // given
         val mockkAttachment = mockk<HolderAttachment>(relaxed = true)
-        val offset = Vec3d(1.0, 2.0, 3.0)
+        val offset = Vec3(1.0, 2.0, 3.0)
         val gravity = 0.08
 
         elementHolder.attachment = mockkAttachment
@@ -145,8 +141,8 @@ class VirtualElementHookTest {
     fun `tick should apply velocity to offset when attachment is not null`() {
         // given
         val mockkAttachment = mockk<HolderAttachment>(relaxed = true)
-        val offset = Vec3d(1.0, 2.0, 3.0)
-        val velocity = Vec3d(3.0, 2.0, 1.0)
+        val offset = Vec3(1.0, 2.0, 3.0)
+        val velocity = Vec3(3.0, 2.0, 1.0)
 
         elementHolder.attachment = mockkAttachment
         virtualElement.offset = offset

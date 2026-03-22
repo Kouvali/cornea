@@ -1,7 +1,7 @@
 package org.kouv.cornea.tests
 
-import net.minecraft.Bootstrap
 import net.minecraft.SharedConstants
+import net.minecraft.server.Bootstrap
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
@@ -15,8 +15,8 @@ class FabricExtension :
     private val threadLocal = ThreadLocal<ClassLoader?>()
 
     override fun beforeAll(context: ExtensionContext) {
-        SharedConstants.createGameVersion()
-        Bootstrap.initialize()
+        SharedConstants.tryDetectVersion()
+        Bootstrap.bootStrap()
     }
 
     override fun beforeEach(context: ExtensionContext) {

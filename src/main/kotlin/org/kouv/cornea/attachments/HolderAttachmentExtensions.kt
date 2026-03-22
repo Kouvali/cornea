@@ -2,23 +2,23 @@ package org.kouv.cornea.attachments
 
 import eu.pb4.polymer.virtualentity.api.ElementHolder
 import eu.pb4.polymer.virtualentity.api.attachment.*
-import net.minecraft.block.BlockState
-import net.minecraft.entity.Entity
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
-import net.minecraft.world.chunk.WorldChunk
+import net.minecraft.core.BlockPos
+import net.minecraft.resources.Identifier
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.chunk.LevelChunk
+import net.minecraft.world.phys.Vec3
 import org.kouv.cornea.annotations.ExperimentalPolymerApi
 import org.kouv.cornea.annotations.InternalPolymerApi
 
 @InternalPolymerApi
 public inline fun blockBoundAttachment(
     holder: ElementHolder,
-    chunk: WorldChunk,
+    chunk: LevelChunk,
     state: BlockState,
     blockPos: BlockPos,
-    pos: Vec3d,
+    pos: Vec3,
     isTicking: Boolean,
     block: BlockBoundAttachment.() -> Unit = {}
 ): BlockBoundAttachment = BlockBoundAttachment(holder, chunk, state, blockPos, pos, isTicking).apply(block)
@@ -26,7 +26,7 @@ public inline fun blockBoundAttachment(
 @ExperimentalPolymerApi
 public inline fun blockBoundAttachmentOf(
     holder: ElementHolder,
-    world: ServerWorld,
+    world: ServerLevel,
     blockPos: BlockPos,
     state: BlockState,
     block: BlockBoundAttachment.() -> Unit = {}
@@ -35,8 +35,8 @@ public inline fun blockBoundAttachmentOf(
 @ExperimentalPolymerApi
 public inline fun blockBoundAttachmentOf(
     holder: ElementHolder,
-    world: ServerWorld,
-    chunk: WorldChunk,
+    world: ServerLevel,
+    chunk: LevelChunk,
     blockPos: BlockPos,
     state: BlockState,
     block: BlockBoundAttachment.() -> Unit = {}
@@ -45,7 +45,7 @@ public inline fun blockBoundAttachmentOf(
 @ExperimentalPolymerApi
 public inline fun blockBoundAttachmentFromMoving(
     holder: ElementHolder,
-    world: ServerWorld,
+    world: ServerLevel,
     pos: BlockPos,
     state: BlockState,
     block: BlockBoundAttachment.() -> Unit = {}
@@ -53,37 +53,37 @@ public inline fun blockBoundAttachmentFromMoving(
 
 public inline fun chunkAttachment(
     holder: ElementHolder,
-    chunk: WorldChunk,
-    pos: Vec3d,
+    chunk: LevelChunk,
+    pos: Vec3,
     isTicking: Boolean,
     block: ChunkAttachment.() -> Unit = {}
 ): ChunkAttachment = ChunkAttachment(holder, chunk, pos, isTicking).apply(block)
 
 public inline fun chunkAttachmentOf(
     holder: ElementHolder,
-    world: ServerWorld,
+    world: ServerLevel,
     pos: BlockPos,
     block: HolderAttachment.() -> Unit = {}
 ): HolderAttachment = ChunkAttachment.of(holder, world, pos).apply(block)
 
 public inline fun chunkAttachmentOfTicking(
     holder: ElementHolder,
-    world: ServerWorld,
+    world: ServerLevel,
     pos: BlockPos,
     block: HolderAttachment.() -> Unit = {}
 ): HolderAttachment = ChunkAttachment.ofTicking(holder, world, pos).apply(block)
 
 public inline fun chunkAttachmentOf(
     holder: ElementHolder,
-    world: ServerWorld,
-    pos: Vec3d,
+    world: ServerLevel,
+    pos: Vec3,
     block: HolderAttachment.() -> Unit = {}
 ): HolderAttachment = ChunkAttachment.of(holder, world, pos).apply(block)
 
 public inline fun chunkAttachmentOfTicking(
     holder: ElementHolder,
-    world: ServerWorld,
-    pos: Vec3d,
+    world: ServerLevel,
+    pos: Vec3,
     block: HolderAttachment.() -> Unit = {}
 ): HolderAttachment = ChunkAttachment.ofTicking(holder, world, pos).apply(block)
 
@@ -130,7 +130,7 @@ public inline fun identifiedUniqueEntityAttachmentOfTicking(
 
 public inline fun manualAttachment(
     holder: ElementHolder,
-    world: ServerWorld,
-    noinline posSupplier: () -> Vec3d,
+    world: ServerLevel,
+    noinline posSupplier: () -> Vec3,
     block: ManualAttachment.() -> Unit = {}
 ): ManualAttachment = ManualAttachment(holder, world, posSupplier).apply(block)
