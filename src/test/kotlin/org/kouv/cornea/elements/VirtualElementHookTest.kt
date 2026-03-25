@@ -109,14 +109,14 @@ class VirtualElementHookTest {
         val drag = 0.8
 
         elementHolder.attachment = mockkAttachment
-        virtualElementHook.`cornea$setVelocity`(velocity)
-        virtualElementHook.`cornea$setDrag`(drag)
+        virtualElementHook.`cornea$setOffsetVelocity`(velocity)
+        virtualElementHook.`cornea$setOffsetDrag`(drag)
 
         // when
         elementHolder.tick()
 
         // then
-        assertEquals(velocity.scale(drag), virtualElementHook.`cornea$getVelocity`())
+        assertEquals(velocity.scale(drag), virtualElementHook.`cornea$getOffsetVelocity`())
     }
 
     @Test
@@ -128,7 +128,7 @@ class VirtualElementHookTest {
 
         elementHolder.attachment = mockkAttachment
         virtualElement.offset = offset
-        virtualElementHook.`cornea$setGravity`(gravity)
+        virtualElementHook.`cornea$setOffsetGravity`(gravity)
 
         // when
         elementHolder.tick()
@@ -146,7 +146,7 @@ class VirtualElementHookTest {
 
         elementHolder.attachment = mockkAttachment
         virtualElement.offset = offset
-        virtualElementHook.`cornea$setVelocity`(velocity)
+        virtualElementHook.`cornea$setOffsetVelocity`(velocity)
 
         // when
         elementHolder.tick()

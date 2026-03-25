@@ -37,11 +37,11 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     @Unique
     private int cornea$removalDelay = -1;
     @Unique
-    private double cornea$drag = 1.0;
+    private double cornea$offsetDrag = 1.0;
     @Unique
-    private double cornea$gravity = 0.0;
+    private double cornea$offsetGravity = 0.0;
     @Unique
-    private Vec3 cornea$velocity = Vec3.ZERO;
+    private Vec3 cornea$offsetVelocity = Vec3.ZERO;
 
     @Override
     public Attributes cornea$getAttributes() {
@@ -117,34 +117,34 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
     }
 
     @Override
-    public double cornea$getDrag() {
-        return cornea$drag;
+    public double cornea$getOffsetDrag() {
+        return cornea$offsetDrag;
     }
 
     @Override
-    public void cornea$setDrag(double drag) {
-        cornea$drag = drag;
+    public void cornea$setOffsetDrag(double offsetDrag) {
+        cornea$offsetDrag = offsetDrag;
     }
 
     @Override
-    public double cornea$getGravity() {
-        return cornea$gravity;
+    public double cornea$getOffsetGravity() {
+        return cornea$offsetGravity;
     }
 
     @Override
-    public void cornea$setGravity(double gravity) {
-        cornea$gravity = gravity;
+    public void cornea$setOffsetGravity(double offsetGravity) {
+        cornea$offsetGravity = offsetGravity;
     }
 
     @Override
-    public Vec3 cornea$getVelocity() {
-        return cornea$velocity;
+    public Vec3 cornea$getOffsetVelocity() {
+        return cornea$offsetVelocity;
     }
 
     @Override
-    public void cornea$setVelocity(Vec3 velocity) {
-        Objects.requireNonNull(velocity);
-        cornea$velocity = velocity;
+    public void cornea$setOffsetVelocity(Vec3 offsetVelocity) {
+        Objects.requireNonNull(offsetVelocity);
+        cornea$offsetVelocity = offsetVelocity;
     }
 
     @Inject(
@@ -206,16 +206,16 @@ public abstract class VirtualElementMixin implements VirtualElement, VirtualElem
             at = @At(value = "HEAD")
     )
     private void cornea$tickPhysics(CallbackInfo ci) {
-        if (Math.abs(cornea$drag - 1.0) > 1.0E-6) {
-            cornea$velocity = cornea$velocity.scale(cornea$drag);
+        if (Math.abs(cornea$offsetDrag - 1.0) > 1.0E-6) {
+            cornea$offsetVelocity = cornea$offsetVelocity.scale(cornea$offsetDrag);
         }
 
-        if (Math.abs(cornea$gravity) > 1.0E-6) {
-            cornea$velocity = cornea$velocity.subtract(0, cornea$gravity, 0);
+        if (Math.abs(cornea$offsetGravity) > 1.0E-6) {
+            cornea$offsetVelocity = cornea$offsetVelocity.subtract(0, cornea$offsetGravity, 0);
         }
 
-        if (cornea$velocity.lengthSqr() > 1E-6) {
-            setOffset(getOffset().add(cornea$velocity));
+        if (cornea$offsetVelocity.lengthSqr() > 1E-6) {
+            setOffset(getOffset().add(cornea$offsetVelocity));
         }
     }
 }

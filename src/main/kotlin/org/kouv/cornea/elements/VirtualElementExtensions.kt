@@ -98,28 +98,28 @@ public val VirtualElement.attributes: Attributes
         return (this as VirtualElementHook).`cornea$getAttributes`()
     }
 
-public var VirtualElement.drag: Double
+public var VirtualElement.offsetDrag: Double
     get() {
-        return (this as VirtualElementHook).`cornea$getDrag`()
+        return (this as VirtualElementHook).`cornea$getOffsetDrag`()
     }
     set(value) {
-        (this as VirtualElementHook).`cornea$setDrag`(value)
+        (this as VirtualElementHook).`cornea$setOffsetDrag`(value)
     }
 
-public var VirtualElement.gravity: Double
+public var VirtualElement.offsetGravity: Double
     get() {
-        return (this as VirtualElementHook).`cornea$getGravity`()
+        return (this as VirtualElementHook).`cornea$getOffsetGravity`()
     }
     set(value) {
-        (this as VirtualElementHook).`cornea$setGravity`(value)
+        (this as VirtualElementHook).`cornea$setOffsetGravity`(value)
     }
 
-public var VirtualElement.velocity: Vec3
+public var VirtualElement.offsetVelocity: Vec3
     get() {
-        return (this as VirtualElementHook).`cornea$getVelocity`()
+        return (this as VirtualElementHook).`cornea$getOffsetVelocity`()
     }
     set(value) {
-        (this as VirtualElementHook).`cornea$setVelocity`(value)
+        (this as VirtualElementHook).`cornea$setOffsetVelocity`(value)
     }
 
 public var VirtualElement.removalDelay: Int

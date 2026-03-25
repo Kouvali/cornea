@@ -28,17 +28,17 @@ public interface VirtualElementHook {
 
     void cornea$setRemovalDelay(int removalDelay);
 
-    double cornea$getDrag();
+    double cornea$getOffsetDrag();
 
-    void cornea$setDrag(double drag);
+    void cornea$setOffsetDrag(double offsetDrag);
 
-    double cornea$getGravity();
+    double cornea$getOffsetGravity();
 
-    void cornea$setGravity(double gravity);
+    void cornea$setOffsetGravity(double offsetGravity);
 
-    Vec3 cornea$getVelocity();
+    Vec3 cornea$getOffsetVelocity();
 
-    void cornea$setVelocity(Vec3 velocity);
+    void cornea$setOffsetVelocity(Vec3 offsetVelocity);
 
     @FunctionalInterface
     interface StartWatchingListener {
