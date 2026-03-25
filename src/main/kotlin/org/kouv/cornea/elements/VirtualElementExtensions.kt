@@ -130,6 +130,14 @@ public var VirtualElement.removalDelay: Int
         (this as VirtualElementHook).`cornea$setRemovalDelay`(value)
     }
 
+public var GenericEntityElement.clientVelocity: Vec3?
+    get() {
+        return (this as GenericEntityElementHook).`cornea$getClientVelocity`()
+    }
+    set(value) {
+        (this as GenericEntityElementHook).`cornea$setClientVelocity`(value)
+    }
+
 public fun VirtualElement.addAsPassengerTo(entity: Entity): Unit =
     VirtualEntityUtils.addVirtualPassenger(entity, *entityIds.toIntArray())
 
