@@ -149,7 +149,7 @@ public var DisplayElement.transformation: Matrix4fc
         }
     }
     set(value) {
-        setTransformation(matrix4f(value))
+        setTransformation(value)
     }
 
 public inline fun DisplayElement.transformation(block: Matrix4f.() -> Unit = {}): Matrix4f =
